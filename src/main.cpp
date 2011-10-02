@@ -26,6 +26,8 @@ int main(int arg, char *argv[]) {
 		exit(0);
 	}
 
+	SDL_WM_SetCaption("Jumping Cubes Classic", 0);
+
 	Game *game = new Game(screen);
 	game->start();
 

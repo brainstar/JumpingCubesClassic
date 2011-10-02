@@ -36,6 +36,10 @@ Game::Game(SDL_Surface *screen) {
 	colors[2] = SDL_MapRGB(fmt, 0, 255, 0);
 	colors[3] = SDL_MapRGB(fmt, 0, 0, 255);
 	colors[4] = SDL_MapRGB(fmt, 255, 255, 0);
+	colors[5] = SDL_MapRGB(fmt, 20, 0, 0);
+	colors[6] = SDL_MapRGB(fmt, 0, 20, 0);
+	colors[7] = SDL_MapRGB(fmt, 0, 0, 20);
+	colors[8] = SDL_MapRGB(fmt, 50, 30, 0);
 
 	currentPlayer = 1;
 }
@@ -60,7 +64,7 @@ int Game::start() {
 					while (!player[currentPlayer] && !player[0])
 						currentPlayer = currentPlayer % 4 + 1;
 
-					SDL_WM_SetCaption("Jumping Cubes Classic - Active Player 1", 0);
+					draw();
 				}
 				if (end == 2) {
 					return 2;
@@ -81,8 +85,7 @@ void Game::draw() {
 	SDL_Rect *rect = new SDL_Rect();
 	rect->h = rect->w = 600;
 	rect->x = rect->y = 0;
-	SDL_FillRect(screen, rect, colors[currentPlayer]);
-	SDL_FillRect(screen, rect, semiblack);
+	SDL_FillRect(screen, rect, colors[currentPlayer + 4]);
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {

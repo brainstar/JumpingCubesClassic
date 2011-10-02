@@ -27,7 +27,7 @@ private:
 	int player[5];
 	int currentPlayer;
 	unsigned int black, grey, semiblack;
-	unsigned int colors[5];
+	unsigned int colors[9];
 
 	void draw();
 	int move(int x, int y);
