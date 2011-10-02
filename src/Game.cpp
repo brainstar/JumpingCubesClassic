@@ -41,6 +41,7 @@ Game::Game(SDL_Surface *screen) {
 	colors[7] = SDL_MapRGB(fmt, 0, 0, 20);
 	colors[8] = SDL_MapRGB(fmt, 50, 30, 0);
 
+	players = 2;
 	currentPlayer = 1;
 }
 
@@ -60,9 +61,9 @@ int Game::start() {
 				y = event.button.y / 60;
 				int end;
 				if (end = move(x, y)) {
-					currentPlayer = currentPlayer % 4 + 1;
+					currentPlayer = currentPlayer % players + 1;
 					while (!player[currentPlayer] && !player[0])
-						currentPlayer = currentPlayer % 4 + 1;
+						currentPlayer = currentPlayer % players + 1;
 
 					draw();
 				}
@@ -79,6 +80,14 @@ int Game::start() {
 	}
 
 	return 0;
+}
+
+int Game::setPlayers(int i) {
+	if (i < 2 || i > 4) {
+		return 0;
+	}
+	players = i;
+	return 1;
 }
 
 void Game::draw() {
@@ -113,8 +122,9 @@ int Game::move(int x, int y) {
 		draw();
 		SDL_Delay((100));
 
-		if (player[currentPlayer] == 64) {
-			cout << "Player " << currentPlayer << " won!";
+		if (player[currentPlayer] == 100) {
+			cout << "Player " << currentPlayer << " won!" << endl;
+			SDL_Delay(5000);
 			return 2;
 		}
 
@@ -131,7 +141,7 @@ int Game::move(int x, int y) {
 		return 0;
 	}
 
-	if (player[currentPlayer] == 64) {
+	if (player[currentPlayer] == 100) {
 		cout << "Player " << currentPlayer << " won!";
 		return 2;
 	}
@@ -154,7 +164,7 @@ int Game::roll(int x, int y) {
 	draw();
 	SDL_Delay((100));
 
-	if (player[currentPlayer] == 64) {
+	if (player[currentPlayer] == 100) {
 		return 2;
 	}
 

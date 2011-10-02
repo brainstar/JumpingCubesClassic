@@ -18,6 +18,7 @@ public:
 	~Game();
 
 	int start();
+	int setPlayers(int i);
 
 private:
 	SDL_Surface *screen;
@@ -26,6 +27,7 @@ private:
 	int surrounding[10][10];
 	int player[5];
 	int currentPlayer;
+	int players;
 	unsigned int black, grey, semiblack;
 	unsigned int colors[9];
 
