@@ -7,6 +7,7 @@
 
 #include "Game.h"
 #include <iostream>
+#include <SDL/SDL_video.h>
 
 Game::Game() {
 }
@@ -51,13 +52,12 @@ void Game::start() {
 			int x, y;
 			switch (event.type) {
 			case SDL_MOUSEBUTTONDOWN:
-				x = event.button.x / 80;
-				y = event.button.y / 80;
+				x = event.button.x / 60;
+				y = event.button.y / 60;
 				if (move(x, y)) {
 					currentPlayer = currentPlayer % 4 + 1;
 					while (!player[currentPlayer] && !player[0])
 						currentPlayer = currentPlayer % 4 + 1;
-					draw();
 				}
 				break;
 
@@ -71,16 +71,16 @@ void Game::start() {
 
 void Game::draw() {
 	SDL_Rect *rect = new SDL_Rect();
-	rect->h = rect->w = 800;
+	rect->h = rect->w = 600;
 	rect->x = rect->y = 0;
 	SDL_FillRect(screen, rect, black);
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			rect = new SDL_Rect();
-			rect->h = rect->w = 80 / 10 * field[i][j];
-			rect->x = 80*i + (10-field[i][j]) * 4;
-			rect->y = 80*j + (10-field[i][j]) * 4;
+			rect->h = rect->w = 60 / 10 * field[i][j];
+			rect->x = 60*i + (10-field[i][j]) * 4;
+			rect->y = 60*j + (10-field[i][j]) * 4;
 
 			unsigned int color;
 			switch (owner[i][j]) {
@@ -108,7 +108,7 @@ void Game::draw() {
 			delete rect;
 		}
 	}
-	SDL_UpdateRect(screen, 0, 0, 800, 800);
+	SDL_UpdateRect(screen, 0, 0, 600, 600);
 }
 
 int Game::move(int x, int y) {
@@ -119,6 +119,9 @@ int Game::move(int x, int y) {
 			player[owner[x][y]]--;
 			owner[x][y] = currentPlayer;
 		}
+
+		draw();
+		SDL_Delay((100));
 
 		if (player[currentPlayer] == 64) {
 			cout << "Player " << currentPlayer << " won!";
@@ -151,6 +154,8 @@ int Game::roll(int x, int y) {
 		player[owner[x][y]]--;
 		owner[x][y] = currentPlayer;
 	}
+	draw();
+	SDL_Delay((100));
 
 	while (field[x][y] > surrounding[x][y]) {
 		field[x][y] -= surrounding[x][y];
