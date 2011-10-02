@@ -30,20 +30,20 @@ Game::Game(SDL_Surface *screen) {
 
 	SDL_PixelFormat *fmt = this->screen->format;
 	black = SDL_MapRGB(fmt, 0, 0, 0);
-	grey = SDL_MapRGB(fmt, 127, 127, 127);
-	red = SDL_MapRGB(fmt, 255, 0, 0);
-	green = SDL_MapRGB(fmt, 0, 255, 0);
-	blue = SDL_MapRGB(fmt, 0, 0, 255);
-	yellow = SDL_MapRGB(fmt, 255, 255, 0);
+	semiblack = SDL_MapRGBA(fmt, 0, 0, 0, 127);
+	colors[0] = SDL_MapRGB(fmt, 127, 127, 127);
+	colors[1] = SDL_MapRGB(fmt, 255, 0, 0);
+	colors[2] = SDL_MapRGB(fmt, 0, 255, 0);
+	colors[3] = SDL_MapRGB(fmt, 0, 0, 255);
+	colors[4] = SDL_MapRGB(fmt, 255, 255, 0);
 
 	currentPlayer = 1;
 }
 
 Game::~Game() {
-	SDL_Quit();
 }
 
-void Game::start() {
+int Game::start() {
 	draw();
 
 	while (1) {
@@ -54,26 +54,35 @@ void Game::start() {
 			case SDL_MOUSEBUTTONDOWN:
 				x = event.button.x / 60;
 				y = event.button.y / 60;
-				if (move(x, y)) {
+				int end;
+				if (end = move(x, y)) {
 					currentPlayer = currentPlayer % 4 + 1;
 					while (!player[currentPlayer] && !player[0])
 						currentPlayer = currentPlayer % 4 + 1;
+
+					SDL_WM_SetCaption("Jumping Cubes Classic - Active Player 1", 0);
+				}
+				if (end == 2) {
+					return 2;
 				}
 				break;
 
 			case SDL_QUIT:
-				delete this;
+				return 0;
 				break;
 			}
 		}
 	}
+
+	return 0;
 }
 
 void Game::draw() {
 	SDL_Rect *rect = new SDL_Rect();
 	rect->h = rect->w = 600;
 	rect->x = rect->y = 0;
-	SDL_FillRect(screen, rect, black);
+	SDL_FillRect(screen, rect, colors[currentPlayer]);
+	SDL_FillRect(screen, rect, semiblack);
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
@@ -82,29 +91,7 @@ void Game::draw() {
 			rect->x = 60*i + (10-field[i][j]) * 4;
 			rect->y = 60*j + (10-field[i][j]) * 4;
 
-			unsigned int color;
-			switch (owner[i][j]) {
-			case 0:
-				color = grey;
-				break;
-			case 1:
-				color = red;
-				break;
-			case 2:
-				color = green;
-				break;
-			case 3:
-				color = blue;
-				break;
-			case 4:
-				color = yellow;
-				break;
-			default:
-				color = black;
-				break;
-			}
-
-			SDL_FillRect(screen, rect, color);
+			SDL_FillRect(screen, rect, colors[owner[i][j]]);
 			delete rect;
 		}
 	}
@@ -125,7 +112,7 @@ int Game::move(int x, int y) {
 
 		if (player[currentPlayer] == 64) {
 			cout << "Player " << currentPlayer << " won!";
-			exit(1);
+			return 2;
 		}
 
 		while (field[x][y] > surrounding[x][y]) {
@@ -140,6 +127,12 @@ int Game::move(int x, int y) {
 	else {
 		return 0;
 	}
+
+	if (player[currentPlayer] == 64) {
+		cout << "Player " << currentPlayer << " won!";
+		return 2;
+	}
+
 	return 1;
 }
 
@@ -154,8 +147,13 @@ int Game::roll(int x, int y) {
 		player[owner[x][y]]--;
 		owner[x][y] = currentPlayer;
 	}
+
 	draw();
 	SDL_Delay((100));
+
+	if (player[currentPlayer] == 64) {
+		return 2;
+	}
 
 	while (field[x][y] > surrounding[x][y]) {
 		field[x][y] -= surrounding[x][y];

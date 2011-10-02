@@ -17,7 +17,7 @@ public:
 	Game(SDL_Surface *screen);
 	~Game();
 
-	void start();
+	int start();
 
 private:
 	SDL_Surface *screen;
@@ -26,7 +26,8 @@ private:
 	int surrounding[10][10];
 	int player[5];
 	int currentPlayer;
-	unsigned int black, grey, red, green, blue, yellow;
+	unsigned int black, grey, semiblack;
+	unsigned int colors[5];
 
 	void draw();
 	int move(int x, int y);

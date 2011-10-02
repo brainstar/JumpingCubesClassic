@@ -8,6 +8,7 @@
 #include "Game.h"
 #include <iostream>
 #include <SDL/SDL.h>
+#include <SDL/SDL_video.h>
 using namespace std;
 
 int main(int arg, char *argv[]) {
@@ -27,6 +28,9 @@ int main(int arg, char *argv[]) {
 
 	Game *game = new Game(screen);
 	game->start();
+
+	delete game;
+	exit(1);
 
 	return 1;
 }
