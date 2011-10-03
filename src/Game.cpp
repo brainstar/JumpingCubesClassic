@@ -51,6 +51,35 @@ Game::~Game() {
 int Game::start() {
 	draw();
 
+	if (players == 0) {
+		players = 4;
+		int end;
+		while (1) {
+			int x, y;
+			do {
+				x = rand() % 10;
+				y = rand() % 10;
+			} while (!(end = move(x, y)));
+			SDL_Delay(200);
+
+			currentPlayer = currentPlayer % players + 1;
+			while (!player[currentPlayer] && !player[0])
+				currentPlayer = currentPlayer % players + 1;
+
+			if (end == 2) {
+				return 2;
+			}
+
+			SDL_Event event;
+			if (SDL_PollEvent(&event)) {
+				switch (event.type) {
+				case SDL_QUIT:
+					return 0;
+					break;
+				}
+			}
+		}
+	}
 	while (1) {
 		SDL_Event event;
 		if (SDL_PollEvent(&event)) {
@@ -83,7 +112,7 @@ int Game::start() {
 }
 
 int Game::setPlayers(int i) {
-	if (i < 2 || i > 4) {
+	if (i < 0 || i > 4) {
 		return 0;
 	}
 	players = i;
@@ -142,7 +171,7 @@ int Game::move(int x, int y) {
 	}
 
 	if (player[currentPlayer] == 100) {
-		cout << "Player " << currentPlayer << " won!";
+		cout << "Player " << currentPlayer << " won!" << endl;
 		return 2;
 	}
 
