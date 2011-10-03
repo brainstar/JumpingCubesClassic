@@ -12,7 +12,7 @@
 Game::Game() {
 }
 
-Game::Game(SDL_Surface *screen) {
+Game::Game(SDL_Surface *screen, Role role) {
 	this->screen = screen;
 
 	for (int i = 0; i < 5; i++) player[i] = 0;
@@ -43,6 +43,8 @@ Game::Game(SDL_Surface *screen) {
 
 	players = 2;
 	currentPlayer = 1;
+
+	this->role = role;
 }
 
 Game::~Game() {
