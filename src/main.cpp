@@ -21,7 +21,7 @@ int main(int arg, char *argv[]) {
 	int players;
 	cout << "Please enter amount of players: (2 - 4)   ";
 	cin >> players;
-	if (players < 2 || players > 4) {
+	if (players < 0 || players > 4) {
 		cerr << "This amount of players is invalid!";
 		exit(0);
 	}
