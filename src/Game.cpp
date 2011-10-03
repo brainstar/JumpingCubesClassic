@@ -142,7 +142,7 @@ int Game::move(int x, int y) {
 	}
 
 	if (player[currentPlayer] == 100) {
-		cout << "Player " << currentPlayer << " won!";
+		cout << "Player " << currentPlayer << " won!" << endl;
 		return 2;
 	}
 
