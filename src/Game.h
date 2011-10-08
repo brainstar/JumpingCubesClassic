@@ -31,9 +31,17 @@ private:
 	unsigned int black, grey, semiblack;
 	unsigned int colors[9];
 
+	void init(SDL_Surface *screen);
+	void reset();
+
+	int startRandom();
+	int startLocal();
+
 	void draw();
 	int move(int x, int y);
 	int roll(int x, int y);
+	int over();
+	void next();
 };
 
 #endif /* GAME_H_ */
