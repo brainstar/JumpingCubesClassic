@@ -69,7 +69,7 @@ void Game::reset() {
 int Game::startRandom() {
 		// No players, filling field with random moves (4 "players")
 		players = 4;
-		int end, x, y;
+		int x, y;
 
 		// Main loop
 		while (1) {
@@ -150,8 +150,10 @@ int Game::start() {
 
 	// 0-player mode
 	if (players == 0) {
-		while (1)
-			startRandom();
+		while (startRandom()) {
+			reset();
+		}
+		return 0;
 	}
 
 	// (1-4)-player mode
