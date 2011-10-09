@@ -1,4 +1,12 @@
-add_library (Game Game.cpp)
-add_executable (../JumpingCubesClassic main.cpp)
+find_package(SDL REQUIRED)
+include_directories(${SDL_INCLUDE_DIR})
 
-target_link_libraries (../JumpingCubesClassic Game SDL)
+set(JCC_SOURCES main.cpp Game.cpp)
+
+if(APPLE)
+	set(JCC_SOURCES ${JCC_SOURCES} SDLMain.m)
+endif(APPLE)
+
+add_executable (../JumpingCubesClassic ${JCC_SOURCES})
+
+target_link_libraries (../JumpingCubesClassic ${SDL_LIBRARY})
