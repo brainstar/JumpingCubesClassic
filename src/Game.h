@@ -43,6 +43,7 @@ private:
 	int roll(int x, int y);
 	int over();
 	void next();
+	void updateCaption();
 };
 
 #endif /* GAME_H_ */

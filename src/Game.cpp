@@ -65,6 +65,8 @@ void Game::reset() {
 
 	// Reset to first player
 	currentPlayer = 1;
+	// Update Caption
+	updateCaption();
 }
 
 // 0-player game
@@ -98,7 +100,7 @@ int Game::startRandom() {
 			if (SDL_PollEvent(&event)) {
 				switch (event.type) {
 				case SDL_QUIT:
-					return 0;
+					exit(0);
 					break;
 				}
 			}
@@ -139,7 +141,7 @@ int Game::startLocal() {
 
 			// Player clicked on exit
 			case SDL_QUIT:
-				return 0;
+				exit(0);
 				break;
 			}
 		}
@@ -197,6 +199,16 @@ void Game::draw() {
 
 	// Put the whole thing to the screen
 	SDL_UpdateRect(screen, 0, 0, scrLength, scrLength);
+
+	// Check for SDL_QUIT
+	SDL_Event event;
+	if (SDL_PollEvent(&event)) {
+		switch (event.type) {
+		case SDL_QUIT:
+			exit(0);
+			break;
+		}
+	}
 }
 
 int Game::move(int x, int y) {
@@ -313,4 +325,15 @@ void Game::next() {
 	currentPlayer = currentPlayer % players + 1;
 	while (!player[currentPlayer] && !player[0])
 		currentPlayer = currentPlayer % players + 1;
+
+	// Update Caption
+	updateCaption();
+}
+
+void Game::updateCaption() {
+	// Update Caption
+	char strCaption[100];
+	sprintf(strCaption, "Jumping Cubes Classic - Player %i", currentPlayer);
+
+	SDL_WM_SetCaption(strCaption, NULL);
 }
