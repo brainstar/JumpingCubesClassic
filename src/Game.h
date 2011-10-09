@@ -22,6 +22,7 @@ public:
 
 private:
 	SDL_Surface *screen;
+	int scrLength, fieldLength;
 	int field[10][10];
 	int owner[10][10];
 	int surrounding[10][10];

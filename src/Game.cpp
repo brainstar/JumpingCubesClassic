@@ -23,6 +23,8 @@ Game::~Game() {
 void Game::init(SDL_Surface *screen) {
 	// Set SDL_Surface to draw on
 	this->screen = screen;
+	scrLength = screen->h;
+	fieldLength = scrLength / 10;
 
 	// Create colors
 	SDL_PixelFormat *fmt = this->screen->format;
@@ -116,8 +118,8 @@ int Game::startLocal() {
 			case SDL_MOUSEBUTTONDOWN:
 				// Calculate indices of chosen field
 				int x, y;
-				x = event.button.x / 60;
-				y = event.button.y / 60;
+				x = event.button.x / fieldLength;
+				y = event.button.y / fieldLength;
 
 				// If legal move
 				if (move(x, y)) {
@@ -174,7 +176,7 @@ int Game::setPlayers(int i) {
 void Game::draw() {
 	// Fill background color with color of active player
 	SDL_Rect *rect = new SDL_Rect();
-	rect->h = rect->w = 600;
+	rect->h = rect->w = scrLength;
 	rect->x = rect->y = 0;
 	SDL_FillRect(screen, rect, colors[currentPlayer + 4]);
 
@@ -184,9 +186,9 @@ void Game::draw() {
 			rect = new SDL_Rect();
 
 			// Height and Width according to field value
-			rect->h = rect->w = 60 / 10 * field[i][j];
-			rect->x = 60*i + (10-field[i][j]) * 4;
-			rect->y = 60*j + (10-field[i][j]) * 4;
+			rect->h = rect->w = (scrLength / 100) * field[i][j];
+			rect->x = fieldLength * i + ((fieldLength - rect->w) / 2);
+			rect->y = fieldLength * j + ((fieldLength - rect->h) / 2);
 
 			SDL_FillRect(screen, rect, colors[owner[i][j]]);
 			delete rect;
@@ -194,7 +196,7 @@ void Game::draw() {
 	}
 
 	// Put the whole thing to the screen
-	SDL_UpdateRect(screen, 0, 0, 600, 600);
+	SDL_UpdateRect(screen, 0, 0, scrLength, scrLength);
 }
 
 int Game::move(int x, int y) {

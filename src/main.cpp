@@ -28,7 +28,10 @@ int main(int arg, char *argv[]) {
 
 	SDL_Surface *screen;
 
-	screen = SDL_SetVideoMode(600, 600, 16, SDL_SWSURFACE);
+	int scrRes;
+	scrRes = 500;
+
+	screen = SDL_SetVideoMode(scrRes, scrRes, 16, SDL_SWSURFACE);
 	if (NULL == screen) {
 		fprintf(stderr, "Couldn't open window: %s\n", SDL_GetError());
 		exit(0);
