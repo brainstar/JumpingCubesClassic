@@ -11,8 +11,10 @@
 #include <SDL/SDL_video.h>
 using namespace std;
 
-int main(int arg, char *argv[]) {
-	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0) {
+int main(int arg, char *argv[])
+{
+	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
+	{
 		fprintf(stderr, "SDL couldn't be initialized: %s\n", SDL_GetError());
 		exit(0);
 	}
@@ -21,7 +23,8 @@ int main(int arg, char *argv[]) {
 	int players;
 	cout << "Please enter amount of players: (2 - 4)   ";
 	cin >> players;
-	if (players < 0 || players > 4) {
+	if (players < 0 || players > 4)
+	{
 		cerr << "This amount of players is invalid!";
 		exit(0);
 	}
@@ -32,7 +35,8 @@ int main(int arg, char *argv[]) {
 	scrRes = 500;
 
 	screen = SDL_SetVideoMode(scrRes, scrRes, 16, SDL_SWSURFACE);
-	if (NULL == screen) {
+	if (NULL == screen)
+	{
 		fprintf(stderr, "Couldn't open window: %s\n", SDL_GetError());
 		exit(0);
 	}
@@ -44,7 +48,7 @@ int main(int arg, char *argv[]) {
 	game->start();
 
 	delete game;
-	exit(1);
+	SDL_Quit();
 
 	return 1;
 }

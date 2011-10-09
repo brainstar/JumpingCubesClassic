@@ -9,18 +9,22 @@
 #include <iostream>
 #include <SDL/SDL_video.h>
 
-Game::Game() {
+Game::Game()
+{
 }
 
-Game::Game(SDL_Surface *screen) {
+Game::Game(SDL_Surface *screen)
+{
 	// Initialize the whole thing
 	init(screen);
 }
 
-Game::~Game() {
+Game::~Game()
+{
 }
 
-void Game::init(SDL_Surface *screen) {
+void Game::init(SDL_Surface *screen)
+{
 	// Set SDL_Surface to draw on
 	this->screen = screen;
 	scrLength = screen->h;
@@ -47,20 +51,26 @@ void Game::init(SDL_Surface *screen) {
 	reset();
 }
 
-void Game::reset() {
+void Game::reset()
+{
 	// Reset all players with to 0 fields
-	for (int i = 0; i < 5; i++) player[i] = 0;
+	for (int i = 0; i < 5; i++)
+		player[i] = 0;
 
 	// Transfer ownership to no one (== player 0) and reset field values
-	for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				field[i][j] = 1;
-				owner[i][j] = 0;
-				surrounding[i][j] = 4;
-				if (0 == i % 9) surrounding[i][j]--;
-				if (0 == j % 9) surrounding[i][j]--;
-				player[0]++;
-			}
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			field[i][j] = 1;
+			owner[i][j] = 0;
+			surrounding[i][j] = 4;
+			if (0 == i % 9)
+				surrounding[i][j]--;
+			if (0 == j % 9)
+				surrounding[i][j]--;
+			player[0]++;
+		}
 	}
 
 	// Reset to first player
@@ -70,80 +80,41 @@ void Game::reset() {
 }
 
 // 0-player game
-int Game::startRandom() {
-		// No players, filling field with random moves (4 "players")
-		players = 4;
-		int x, y;
+int Game::startRandom()
+{
+	// No players, filling field with random moves (4 "players")
+	players = 4;
+	int x, y;
 
-		// Main loop
-		while (1) {
-			// Generate random move
-			do {
-				x = rand() % 10;
-				y = rand() % 10;
-			} while (!move(x, y)); // If illegal move, try again
-			SDL_Delay(200);
-
-			// If someone won, end the game
-			if (over()) {
-				return 1;
-			}
-
-			// Next player
-			next();
-
-			// Redraw field to change background color to next player
-			draw();
-
-			// User chooses to exit the game
-			SDL_Event event;
-			if (SDL_PollEvent(&event)) {
-				switch (event.type) {
-				case SDL_QUIT:
-					exit(0);
-					break;
-				}
-			}
-		}
-}
-
-
-// Local game
-int Game::startLocal() {
 	// Main loop
-	while (1) {
-		// Catching mouse events and SDL_QUIT event
+	while (1)
+	{
+		// Generate random move
+		do
+		{
+			x = rand() % 10;
+			y = rand() % 10;
+		} while (!move(x, y)); // If illegal move, try again
+		SDL_Delay(200);
+
+		// If someone won, end the game
+		if (over())
+		{
+			return 1;
+		}
+
+		// Next player
+		next();
+
+		// Redraw field to change background color to next player
+		draw();
+
+		// User chooses to exit the game
 		SDL_Event event;
-		if (SDL_PollEvent(&event)) {
-			switch (event.type) {
-			// Player clicked on a field
-			case SDL_MOUSEBUTTONDOWN:
-				// Calculate indices of chosen field
-				int x, y;
-				x = event.button.x / fieldLength;
-				y = event.button.y / fieldLength;
-
-				// If legal move
-				if (move(x, y)) {
-					// Move on to next player
-					next();
-
-					// Redraw field to change background color to next player
-					draw();
-
-					// Display Game Status
-					printf("1->%i   2->%i   3->%i   4->%i", player[1], player[2], player[3], player[4]);
-					cout << endl;
-				}
-
-				// Someone won?
-				if (int winner = over()) {
-					cout << "Player " << winner << " just WON the game!" << endl << "It's okay! You're free!" << endl;
-					return 1;
-				}
-				break;
-
-			// Player clicked on exit
+		if (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
 			case SDL_QUIT:
 				exit(0);
 				break;
@@ -152,13 +123,68 @@ int Game::startLocal() {
 	}
 }
 
-int Game::start() {
+// Local game
+int Game::startLocal()
+{
+	// Main loop
+	while (1)
+	{
+		// Catching mouse events and SDL_QUIT event
+		SDL_Event event;
+		if (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			// Player clicked on a field
+			case SDL_MOUSEBUTTONDOWN:
+				// Calculate indices of chosen field
+				int x, y;
+				x = event.button.x / fieldLength;
+				y = event.button.y / fieldLength;
+
+				// If legal move
+				if (move(x, y))
+				{
+					// Move on to next player
+					next();
+
+					// Redraw field to change background color to next player
+					draw();
+
+					// Display Game Status
+					printf("1->%i   2->%i   3->%i   4->%i", player[1], player[2],
+					    player[3], player[4]);
+					cout << endl;
+				}
+
+				// Someone won?
+				if (int winner = over())
+				{
+					cout << "Player " << winner << " just WON the game!" << endl
+					    << "It's okay! You're free!" << endl;
+					return 1;
+				}
+				break;
+
+				// Player clicked on exit
+			case SDL_QUIT:
+				exit(0);
+				break;
+			}
+		}
+	}
+}
+
+int Game::start()
+{
 	// Draw gamefield at beginning
 	draw();
 
 	// 0-player mode
-	if (players == 0) {
-		while (startRandom()) {
+	if (players == 0)
+	{
+		while (startRandom())
+		{
 			reset();
 			draw();
 		}
@@ -169,9 +195,11 @@ int Game::start() {
 	return startLocal();
 }
 
-int Game::setPlayers(int i) {
+int Game::setPlayers(int i)
+{
 	// Range check
-	if (i < 0 || i > 4) {
+	if (i < 0 || i > 4)
+	{
 		return 0;
 	}
 	// Set amount of players
@@ -180,7 +208,8 @@ int Game::setPlayers(int i) {
 	return 1;
 }
 
-void Game::draw() {
+void Game::draw()
+{
 	// Fill background color with color of active player
 	SDL_Rect *rect = new SDL_Rect();
 	rect->h = rect->w = scrLength;
@@ -188,8 +217,10 @@ void Game::draw() {
 	SDL_FillRect(screen, rect, colors[currentPlayer + 4]);
 
 	// Draw the fields
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
 			rect = new SDL_Rect();
 
 			// Height and Width according to field value
@@ -207,8 +238,10 @@ void Game::draw() {
 
 	// Check for SDL_QUIT
 	SDL_Event event;
-	if (SDL_PollEvent(&event)) {
-		switch (event.type) {
+	if (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
 		case SDL_QUIT:
 			exit(0);
 			break;
@@ -216,19 +249,23 @@ void Game::draw() {
 	}
 }
 
-int Game::move(int x, int y) {
+int Game::move(int x, int y)
+{
 	// Range check of input values
-	if (x < 0 || x > 9 || y < 0 || y > 9) {
+	if (x < 0 || x > 9 || y < 0 || y > 9)
+	{
 		return 0;
 	}
 
 	// If legal move
-	if (owner[x][y] == currentPlayer || owner[x][y] == 0) {
+	if (owner[x][y] == currentPlayer || owner[x][y] == 0)
+	{
 		// Increase field value
 		field[x][y]++;
 
 		// Update field ownership
-		if (owner[x][y] != currentPlayer) {
+		if (owner[x][y] != currentPlayer)
+		{
 			player[currentPlayer]++;
 			player[owner[x][y]]--;
 			owner[x][y] = currentPlayer;
@@ -239,22 +276,24 @@ int Game::move(int x, int y) {
 		SDL_Delay((100));
 
 		// Someone already won? No need to resume calculation of chain reaction
-		if (over()) {
+		if (over())
+		{
 			return 2;
 		}
 
 		// Calculating chain reaction
-		while (field[x][y] > surrounding[x][y]) {
+		while (field[x][y] > surrounding[x][y])
+		{
 			field[x][y] -= surrounding[x][y];
 
 			// Someone won? No need to resum calculation of chain reaction
-			if (roll(x-1, y) == 2)
+			if (roll(x - 1, y) == 2)
 				return 2;
-			if (roll(x+1, y) == 2)
+			if (roll(x + 1, y) == 2)
 				return 2;
-			if (roll(x, y-1) == 2)
+			if (roll(x, y - 1) == 2)
 				return 2;
-			if (roll(x, y+1) == 2)
+			if (roll(x, y + 1) == 2)
 				return 2;
 		}
 
@@ -262,14 +301,17 @@ int Game::move(int x, int y) {
 		return 1;
 	}
 	// Illegal move
-	else {
+	else
+	{
 		return 0;
 	}
 }
 
-int Game::roll(int x, int y) {
+int Game::roll(int x, int y)
+{
 	// Range check of input values
-	if (x < 0 || x > 9 || y < 0 || y > 9) {
+	if (x < 0 || x > 9 || y < 0 || y > 9)
+	{
 		return 0;
 	}
 
@@ -277,7 +319,8 @@ int Game::roll(int x, int y) {
 	field[x][y]++;
 
 	// Update field ownership
-	if (owner[x][y] != currentPlayer) {
+	if (owner[x][y] != currentPlayer)
+	{
 		player[currentPlayer]++;
 		player[owner[x][y]]--;
 		owner[x][y] = currentPlayer;
@@ -288,22 +331,24 @@ int Game::roll(int x, int y) {
 	SDL_Delay((100));
 
 	// Someone already won? No need to resume calculation of chain reaction
-	if (over()) {
+	if (over())
+	{
 		return 2;
 	}
 
 	// Calculating chain reaction
-	while (field[x][y] > surrounding[x][y]) {
+	while (field[x][y] > surrounding[x][y])
+	{
 		field[x][y] -= surrounding[x][y];
 
 		// Someone won? No need to resum calculation of chain reaction
-		if (roll(x-1, y) == 2)
+		if (roll(x - 1, y) == 2)
 			return 2;
-		if (roll(x+1, y) == 2)
+		if (roll(x + 1, y) == 2)
 			return 2;
-		if (roll(x, y-1) == 2)
+		if (roll(x, y - 1) == 2)
 			return 2;
-		if (roll(x, y+1) == 2)
+		if (roll(x, y + 1) == 2)
 			return 2;
 	}
 
@@ -311,12 +356,14 @@ int Game::roll(int x, int y) {
 	return 1;
 }
 
-
-int Game::over() {
+int Game::over()
+{
 	// Someone just won the game?
-	for (int i = 0; i < players; i++) {
-		if (player[i] == 100) {
-			// Yey! Return the glory winner
+	for (int i = 0; i < players; i++)
+	{
+		if (player[i] == 100)
+		{
+// Yey! Return the glory winner
 			return i;
 		}
 	}
@@ -325,7 +372,8 @@ int Game::over() {
 	return 0;
 }
 
-void Game::next() {
+void Game::next()
+{
 	// Move on to next player
 	currentPlayer = currentPlayer % players + 1;
 	while (!player[currentPlayer] && !player[0])
@@ -335,7 +383,8 @@ void Game::next() {
 	updateCaption();
 }
 
-void Game::updateCaption() {
+void Game::updateCaption()
+{
 	// Update Caption
 	char strCaption[100];
 	sprintf(strCaption, "Jumping Cubes Classic - Player %i", currentPlayer);
