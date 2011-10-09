@@ -84,16 +84,16 @@ int Game::startRandom() {
 			} while (!move(x, y)); // If illegal move, try again
 			SDL_Delay(200);
 
+			// If someone won, end the game
+			if (over()) {
+				return 1;
+			}
+
 			// Next player
 			next();
 
 			// Redraw field to change background color to next player
 			draw();
-
-			// If someone won, end the game
-			if (over()) {
-				return 1;
-			}
 
 			// User chooses to exit the game
 			SDL_Event event;
@@ -130,11 +130,15 @@ int Game::startLocal() {
 
 					// Redraw field to change background color to next player
 					draw();
+
+					// Display Game Status
+					printf("1->%i   2->%i   3->%i   4->%i", player[1], player[2], player[3], player[4]);
+					cout << endl;
 				}
 
 				// Someone won?
 				if (int winner = over()) {
-					cout << "Player " << winner << "just WON the game!" << endl << "It's okay! You're free!" << endl;
+					cout << "Player " << winner << " just WON the game!" << endl << "It's okay! You're free!" << endl;
 					return 1;
 				}
 				break;
@@ -156,6 +160,7 @@ int Game::start() {
 	if (players == 0) {
 		while (startRandom()) {
 			reset();
+			draw();
 		}
 		return 0;
 	}
