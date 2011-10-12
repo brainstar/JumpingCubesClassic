@@ -20,8 +20,10 @@ void netInit() {
 	}
 }
 
-int main(int arg, char *argv[]) {
-	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0) {
+int main(int arg, char *argv[])
+{
+	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
+	{
 		fprintf(stderr, "SDL couldn't be initialized: %s\n", SDL_GetError());
 		exit(0);
 	}
@@ -112,7 +114,6 @@ int main(int arg, char *argv[]) {
 		// TODO: Send some "ready" message to clients
 	}
 
-	if (players < 2 || players > 4) {
 			cerr << "This amount of players is invalid!";
 			exit(0);
 	}
@@ -120,8 +121,12 @@ int main(int arg, char *argv[]) {
 
 	SDL_Surface *screen;
 
-	screen = SDL_SetVideoMode(600, 600, 16, SDL_SWSURFACE);
-	if (NULL == screen) {
+	int scrRes;
+	scrRes = 500;
+
+	screen = SDL_SetVideoMode(scrRes, scrRes, 16, SDL_SWSURFACE);
+	if (NULL == screen)
+	{
 		fprintf(stderr, "Couldn't open window: %s\n", SDL_GetError());
 		exit(0);
 	}
@@ -135,7 +140,7 @@ int main(int arg, char *argv[]) {
 	SDLNet_Quit();
 	SDL_Quit();
 	delete game;
-	exit(1);
+	SDL_Quit();
 
 	return 1;
 }

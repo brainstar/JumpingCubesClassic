@@ -13,7 +13,8 @@
 #include <SDL/SDL.h>
 using namespace std;
 
-class Game {
+class Game
+{
 public:
 	enum Role {
 		LOCAL,
@@ -33,6 +34,7 @@ public:
 
 private:
 	SDL_Surface *screen;
+	int scrLength, fieldLength;
 	int field[10][10];
 	int owner[10][10];
 	int surrounding[10][10];
@@ -42,11 +44,20 @@ private:
 	unsigned int black, grey, semiblack;
 	unsigned int colors[9];
 
+	void init(SDL_Surface *screen);
+	void reset();
+
+
+	Role role;
+	int startRandom();
+	int startLocal();
+
 	void draw();
 	int move(int x, int y);
 	int roll(int x, int y);
-
-	Role role;
+	int over();
+	void next();
+	void updateCaption();
 };
 
 #endif /* GAME_H_ */
