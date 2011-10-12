@@ -114,17 +114,12 @@ int main(int arg, char *argv[])
 		// TODO: Send some "ready" message to clients
 	}
 
-			cerr << "This amount of players is invalid!";
-			exit(0);
-	}
-	
-
-	SDL_Surface *screen;
-
 	int scrRes;
 	scrRes = 500;
 
+	SDL_Surface *screen;
 	screen = SDL_SetVideoMode(scrRes, scrRes, 16, SDL_SWSURFACE);
+	
 	if (NULL == screen)
 	{
 		fprintf(stderr, "Couldn't open window: %s\n", SDL_GetError());

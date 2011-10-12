@@ -44,7 +44,7 @@ private:
 	unsigned int black, grey, semiblack;
 	unsigned int colors[9];
 
-	void init(SDL_Surface *screen);
+	void init(SDL_Surface *screen, Role role);
 	void reset();
 
 

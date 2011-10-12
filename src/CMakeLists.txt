@@ -1,4 +1,5 @@
 find_package(SDL REQUIRED)
+find_package(SDL_net REQUIRED)
 include_directories(${SDL_INCLUDE_DIR})
 
 set(JCC_SOURCES main.cpp Game.cpp)
@@ -9,4 +10,4 @@ endif(APPLE)
 
 add_executable (../JumpingCubesClassic ${JCC_SOURCES})
 
-target_link_libraries (../JumpingCubesClassic ${SDL_LIBRARY})
+target_link_libraries (../JumpingCubesClassic ${SDL_LIBRARY} SDL_net)

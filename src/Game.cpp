@@ -13,17 +13,17 @@ Game::Game()
 {
 }
 
-Game::Game(SDL_Surface *screen, Role role) {
+Game::Game(SDL_Surface *screen, Role role)
 {
 	// Initialize the whole thing
-	init(screen);
+	init(screen, role);
 }
 
 Game::~Game()
 {
 }
 
-void Game::init(SDL_Surface *screen)
+void Game::init(SDL_Surface *screen, Role role)
 {
 	// Set SDL_Surface to draw on
 	this->screen = screen;
