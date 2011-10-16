@@ -18,10 +18,8 @@ public:
 	Game(SDL_Surface *screen);
 	~Game();
 
-	int
-	start();
-	int
-	setPlayers(int i);
+	int start();
+	int setPlayers(int i);
 
 private:
 	SDL_Surface *screen;
@@ -35,28 +33,18 @@ private:
 	unsigned int black, grey, semiblack;
 	unsigned int colors[9];
 
-	void
-	init(SDL_Surface *screen);
-	void
-	reset();
+	void init(SDL_Surface *screen);
+	void reset();
 
-	int
-	startRandom();
-	int
-	startLocal();
+	int startRandom();
+	int startLocal();
 
-	void
-	draw();
-	int
-	move(int x, int y);
-	int
-	roll(int x, int y);
-	int
-	over();
-	void
-	next();
-	void
-	updateCaption();
+	void draw();
+	int move(int x, int y);
+	int roll(int x, int y);
+	int over();
+	void next();
+	void updateCaption();
 };
 
 #endif /* GAME_H_ */
