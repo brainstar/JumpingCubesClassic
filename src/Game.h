@@ -8,29 +8,22 @@
 #ifndef GAME_H_
 #define GAME_H_
 
+#include <SDL/SDL.h>
+#include "Network.h"
+
 #define GAME_PORT 9559
 
-#include <SDL/SDL.h>
 using namespace std;
 
 class Game
 {
 public:
-	enum Role {
-		LOCAL,
-		CLIENT,
-		SERVER
-	};
-
 	Game();
-	Game(SDL_Surface *screen, Role role);
+	Game(SDL_Surface *screen, GameNetworking *networking);
 	~Game();
 
 	int start();
 	int setPlayers(int i);
-	bool isLocal();
-	bool isClient();
-	bool isServer();
 
 private:
 	SDL_Surface *screen;
@@ -44,11 +37,12 @@ private:
 	unsigned int black, grey, semiblack;
 	unsigned int colors[9];
 
-	void init(SDL_Surface *screen, Role role);
+	NetRole role;
+	GameNetworking *networking;
+
+	void init(SDL_Surface *screen, GameNetworking *networking);
 	void reset();
 
-
-	Role role;
 	int startRandom();
 	int startLocal();
 

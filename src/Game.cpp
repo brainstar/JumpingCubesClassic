@@ -13,17 +13,17 @@ Game::Game()
 {
 }
 
-Game::Game(SDL_Surface *screen, Role role)
+Game::Game(SDL_Surface *screen, GameNetworking *networking)
 {
 	// Initialize the whole thing
-	init(screen, role);
+	init(screen, networking);
 }
 
 Game::~Game()
 {
 }
 
-void Game::init(SDL_Surface *screen, Role role)
+void Game::init(SDL_Surface *screen, GameNetworking *networking)
 {
 	// Set SDL_Surface to draw on
 	this->screen = screen;
@@ -43,6 +43,8 @@ void Game::init(SDL_Surface *screen, Role role)
 	colors[6] = SDL_MapRGB(fmt, 0, 20, 0);
 	colors[7] = SDL_MapRGB(fmt, 0, 0, 20);
 	colors[8] = SDL_MapRGB(fmt, 50, 30, 0);
+
+	this->role = networking->getRole();
 
 	// Initialize count of players
 	players = 0;

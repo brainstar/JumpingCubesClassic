@@ -2,7 +2,7 @@ find_package(SDL REQUIRED)
 find_package(SDL_net REQUIRED)
 include_directories(${SDL_INCLUDE_DIR})
 
-set(JCC_SOURCES main.cpp Game.cpp)
+set(JCC_SOURCES main.cpp Game.cpp Network.cpp)
 
 if(APPLE)
 	set(JCC_SOURCES ${JCC_SOURCES} SDLMain.m)

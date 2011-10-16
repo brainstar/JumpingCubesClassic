@@ -5,20 +5,15 @@
  *      Author: brainstar, blacktremolo
  */
 
-#include "Game.h"
 #include <iostream>
 #include <string>
 #include <SDL/SDL.h>
 #include <SDL/SDL_video.h>
-#include <SDL/SDL_net.h>
-using namespace std;
 
-void netInit() {
-	if(SDLNet_Init() == -1) {
-		fprintf(stderr, "SDL Net couldn't be initialized: %s\n", SDLNet_GetError());
-		exit(0);
-	}
-}
+#include "Game.h"
+#include "Network.h"
+
+using namespace std;
 
 int main(int arg, char *argv[])
 {
@@ -28,27 +23,29 @@ int main(int arg, char *argv[])
 		exit(0);
 	}
 	atexit(SDL_Quit);
+	atexit(SDLNet_Quit);
+	// Note: atexit functions get called in reversed order
+	// (i.e. SDLNet_Quit gets called first, then SDL_Quit)
+	// Dunno if the order is even important in our case =D
 
 	// Setup networking if desired
 	bool isNetworkGame = false;
-	char roleInput = 'X'; // X marks the spot :)
-	Game::Role role = Game::LOCAL;
+	char roleInput = 'X'; // X marks the spot :) [to be exact: the spot of fail]
+	NetRole role = LOCAL;
 	cout << "Local, client or server?: (l/c/s)   ";
 	cin >> roleInput;
 	switch(roleInput) {
 		case 'l':
-			role = Game::LOCAL;
+			role = LOCAL;
 			isNetworkGame = false;
 			break;
 		case 'c':
-			role = Game::CLIENT;
+			role = CLIENT;
 			isNetworkGame = true;
-			netInit();
 			break;
 		case 's':
-			role = Game::SERVER;
+			role = SERVER;
 			isNetworkGame = true;
-			netInit();
 			break;
 		default:
 			cerr << "Invaild selection\n";
@@ -56,62 +53,25 @@ int main(int arg, char *argv[])
 			break;
 	}
 
-	IPaddress ipaddress;
+	GameNetworking *networking = new GameNetworking(role);
 
 	/*
 	  Gathering player amount is the same way for local and server role
 	  but different way for client role
 	*/
-	int players;
-	if(role != Game::CLIENT)
+	int players = -1;
+	if(role == LOCAL)
 	{
 		cout << "Please enter amount of players: (2 - 4)   ";
 		cin >> players;
-	}
-	else {
-		if(SDLNet_ResolveHost(&ipaddress, "localhost", GAME_PORT) == -1) {
-			fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
-			exit(1);
-		}
-		
-		TCPsocket playerSocket = SDLNet_TCP_Open(&ipaddress);
-		if(!playerSocket) {
-			fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
+		if(!(players == 0 || (players >= 2 && players <= 4)))
+		{
+			cerr << "Invalid selection\n";
 			exit(0);
 		}
-		/*
-		  TODO: Make the client wait and listen for the player amount
-		        and possibly other data
-		*/
 	}
-
-	if(role == Game::SERVER) {
-		TCPsocket serverSocket;
-		TCPsocket clientSockets[players-1];
-		int numConnected = 0;
-
-		if(SDLNet_ResolveHost(&ipaddress, NULL, GAME_PORT) == -1) {
-    			fprintf(stderr, "SDL Net ResolveHost failed: %s\n", SDLNet_GetError());
-    			exit(0);
-		}
-
-		serverSocket = SDLNet_TCP_Open(&ipaddress);
-		if(!serverSocket) {
-   			printf("SDLNet_TCP_Open: %s\n", SDLNet_GetError());
-   			exit(0);
-		}
-
-		while(numConnected < players)
-		{
-			TCPsocket clientSocket = SDLNet_TCP_Accept(serverSocket);
-			if(clientSocket)
-			{
-				clientSockets[numConnected] = clientSocket;
-				numConnected++;
-				// TODO: Inform client about player number
-			}
-		}
-		// TODO: Send some "ready" message to clients
+	else {
+		players = networking->getPlayers();
 	}
 
 	int scrRes;
@@ -128,13 +88,12 @@ int main(int arg, char *argv[])
 
 	SDL_WM_SetCaption("Jumping Cubes Classic", 0);
 
-	Game *game = new Game(screen, role);
+	Game *game = new Game(screen, networking);
 	game->setPlayers(players);
 	game->start();
 
-	SDLNet_Quit();
-	SDL_Quit();
 	delete game;
+	SDLNet_Quit();
 	SDL_Quit();
 
 	return 1;
