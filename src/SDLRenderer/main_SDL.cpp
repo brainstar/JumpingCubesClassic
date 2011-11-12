@@ -2,7 +2,7 @@
  * main.cpp
  *
  *  Created on: 02.10.2011
- *      Author: brainstar
+ *      Author: Christian M.
  */
 
 #include "Game.h"

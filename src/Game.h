@@ -2,49 +2,48 @@
  * Game.h
  *
  *  Created on: 02.10.2011
- *      Author: brainstar
+ *      Author: Christian M.
  */
 
 #ifndef GAME_H_
 #define GAME_H_
 
-#include <SDL/SDL.h>
+#include "JCCTypes.h"
+#include "Renderer.h"
 using namespace std;
 
 class Game
 {
 public:
 	Game();
-	Game(SDL_Surface *screen);
 	~Game();
 
-	int start();
 	int setPlayers(int i);
+	int setFieldSize(int a);
+	int setRenderer(Renderer* r);
+	
+	int startGame(int players = 0, int fieldSize = 8, Renderer* r = NULL);
+	void reset();
+	
+	int move(float x, float y); // Coordinates in [0.0, 1.0[
 
 private:
-	SDL_Surface *screen;
-	int scrLength, fieldLength;
-	int field[10][10];
-	int owner[10][10];
-	int surrounding[10][10];
-	int player[5];
+	Field field; // Field
+	vector<vector<bool> > roll; // Map of elements that roll over in the next iteration
+	int size; // Size of the field
+	
+	int player[5]; // Array that holds the actual points of each player
 	int currentPlayer;
-	int players;
-	unsigned int black, grey, semiblack;
-	unsigned int colors[9];
+	int players; // Amount of players
+	
+	Renderer* renderer; // The interface to the display
+	
+	bool running; // Game is running?
 
-	void init(SDL_Surface *screen);
-	void reset();
+	void changeOwner(Element *e, int p);
 
-	int startRandom();
-	int startLocal();
-
-	void draw();
-	int move(int x, int y);
-	int roll(int x, int y);
 	int over();
 	void next();
-	void updateCaption();
 };
 
 #endif /* GAME_H_ */

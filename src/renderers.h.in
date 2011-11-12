@@ -1,0 +1,14 @@
+/*
+ * renderers.h.in
+ *
+ *  Created on: 05.11.2011
+ *      Author: Christian M.
+ */
+
+#ifndef _JCC_RENDERERS_H
+#define _JCC_RENDERERS_H_
+
+#cmakedefine CMAKE_HAVE_QT
+#cmakedefine CMAKE_HAVE_SDL
+
+#endif
