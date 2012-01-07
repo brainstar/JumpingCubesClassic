@@ -52,8 +52,17 @@ void JCCQWidget::setRenderer(QtRenderer* r) {
 }
 
 void JCCQWidget::startAnimation() {
-	timer->start();
-	timerTick();
+	if (!(timer->isActive())) {
+		timer->start();
+		timerTick();
+	}
+}
+
+void JCCQWidget::gameOver(int winner) {
+	QString msg = "Player ";
+	msg += winner;
+	msg += " won!";
+	status->showMessage(msg, 0);
 }
 
 void JCCQWidget::mouseClicked(float x, float y) {

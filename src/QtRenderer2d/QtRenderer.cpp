@@ -22,7 +22,7 @@ void QtRenderer::setGame(Game *g) {
 	game = g;
 }
 
-void QtRenderer::startGame(int players) {
+void QtRenderer::startGame(int players, int fieldsize) {
 	if (!running) {
 		running = game->startGame(players, fieldsize, this);
 	}
@@ -39,10 +39,10 @@ void QtRenderer::toggleGame(bool b) {
 	running = b;
 }
 
-void QtRenderer::push(Field f) {
+void QtRenderer::push(Map m) {
 	if (running) {
-		fields.push_back(f);
-		display->startTimer();
+		maps.push_back(m);
+		display->startAnimation();
 	}
 }
 
@@ -51,30 +51,26 @@ void QtRenderer::flush() {
 		return;
 	}
 	
-	while (fields.size() > 1) {
-		fields.pop_front();
+	while (maps.size() > 1) {
+		maps.pop_front();
 	}
-	
-	Field a = fields.front();
-	display->update(a);
-	fields.pop_front();
+
+	display->startAnimation();
 }
 
-int QtRenderer::update() {
+Map QtRenderer::update() {
 	if (fields.size() > 0) {
-		Field a = fields.front();
-		display->update(a);
+		Map a = fields.front();
 		fields.pop_front();
+		return a;
 	}
-	if (fields.size() > 0) {
-		return 0; // More fields to draw
-	}
-	return 1; // No more fields to draw
+	
+	return 0;
 }
 
 void QtRenderer::gameOver(int winner) {
 	running = false;
-	//TODO: Display something great
+	display->gameOver(winner);
 }
 
 int QtRenderer::mouseEvent(float x, float y) {

@@ -22,9 +22,9 @@ public:
 	void stopGame();
 	void toggleGame(bool b);
 	
-	void push(Field f);
+	void push(Map m);
 	void flush();
-	int update();
+	Map update();
 	void gameOver(int winner);
 	
 	int mouseEvent(float x, float y);
@@ -33,7 +33,7 @@ private:
 	Game *game;
 	bool running;
 	class JCCQWidget *display;
-	list<Field> fields;
+	list<Map> maps;
 };
 
 #endif

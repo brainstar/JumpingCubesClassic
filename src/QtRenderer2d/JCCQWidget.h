@@ -24,6 +24,7 @@ public:
 	
 	void setRenderer(QtRenderer* r);
 	void startAnimation();
+	void gameOver(int winner);
 	
 public slots:
 	void mouseClicked(float x, float y);
