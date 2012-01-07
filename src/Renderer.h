@@ -15,10 +15,9 @@ class Renderer {
 public:
 	Renderer() {}
 	
-	virtual void push(Field f) = 0;
+	virtual void push(Map f) = 0;
 	virtual void flush() = 0;
 	virtual void gameOver(int winner) = 0;
-	virtual int mouseEvent(float x, float y) = 0;
 };
 
 #endif

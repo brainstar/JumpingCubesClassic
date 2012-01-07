@@ -4,11 +4,21 @@
 #include <vector>
 using namespace std;
 
-class Element {
+class Field {
 public:
-	Element() {
+	Field() {
 		owner = 0;
 		value = 1;
+	}
+
+	Field& operator=(const Field &rhs) {
+		x = rhs.x;
+		y = rhs.y;
+		owner = rhs.owner;
+		value = rhs.value;
+		n = rhs.n;
+
+		return *this;
 	}
 
 	int x, y; // Coordinates
@@ -17,6 +27,17 @@ public:
 	int n; // Maximum value of this element
 };
 
-typedef vector<vector<Element> > Field;
+class Map {
+public:
+	vector<vector<Field> > m;
+	int size;
+	
+	Map& operator=(const Map &rhs) {
+		size = rhs.size;
+		m = rhs.m;
+	}
+}
+
+typedef vector<vector<Field> > Map;
 
 #endif
