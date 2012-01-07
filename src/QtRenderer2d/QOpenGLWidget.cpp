@@ -28,20 +28,14 @@ QOpenGLWidget::QOpenGLWidget(QWidget *parent, char *name) : QGLWidget(parent) {
 QOpenGLWidget::~QOpenGLWidget() {
 }
 
-int QOpenGLWidget::setFieldSize(int a) {
-	if (fields == a || a < 3 || a > 20) {
-		return fields;
-	}
-	fields = a;
-	return fields;
+void QOpenGLWidget::slotDraw(Map m) {
+	qDebug("in slotDraw(Map)?");
+	map = m;
+	slotDraw();
 }
 
-void QOpenGLWidget::draw(Field f) {
-	field = f;
-	draw();
-}
-
-void QOpenGLWidget::draw() {
+void QOpenGLWidget::slotDraw() {
+	qDebug("in slotDraw()");
 	paintGL();
 }
 
@@ -76,25 +70,27 @@ void QOpenGLWidget::resizeGL(int w, int h) {
 }
 
 void QOpenGLWidget::paintGL() {
+	qDebug("in paintGL?");
 	// Draw everything
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	
-	Element *e;
+	Field *f;
 	for (int i = 0; i < fields; i++) {
 		for (int j = 0; j < fields; j++) {
-			e = &(field[i][j]);
+			f = &(map->m[i][j]);
 			
-			int v = e->value;
- 			float w = (1.0 / fields) * v;
+			int v = f->value;
+			int s = map->size;
+ 			float w = (1.0 / s) * v;
  			
 			float x1, y1, x2, y2;
-			x1 = 10.0 / fields * i + (5.0 / fields - w / 2.);
-			y1 = 10.0 / fields * j + (5.0 / fields - w / 2.);
+			x1 = 10.0 / s * i + (5.0 / s - w / 2.);
+			y1 = 10.0 / s * j + (5.0 / s - w / 2.);
 			x2 = x1 + w;
 			y2 = y1 + w;
 			
-			glColor3fv(colors[e->owner]);
+			glColor3fv(colors[f->owner]);
 			
 			glBegin(GL_QUADS);
 				glVertex2f(x1, y1);

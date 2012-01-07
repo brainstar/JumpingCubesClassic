@@ -21,9 +21,8 @@ public:
 	~QOpenGLWidget();
 	
 public slots:
-	int setFieldSize(int a);
-	void draw(Field f);
-	void draw();
+	void slotDraw(Map m);
+	void slotDraw();
 
 protected:
 	void initializeGL();
@@ -37,8 +36,7 @@ signals:
 private:
 	float colors[5][3];
 	float black[3];
-	int fields;
-	Field field;
+	Map map;
 };
 
 #endif
