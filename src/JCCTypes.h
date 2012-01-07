@@ -38,6 +38,6 @@ public:
 	}
 }
 
-typedef vector<vector<Field> > Map;
+//typedef vector<vector<Field> > Map;
 
 #endif
