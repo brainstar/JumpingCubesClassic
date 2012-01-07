@@ -22,15 +22,15 @@ public:
 	int setFieldSize(int a);
 	int setRenderer(Renderer* r);
 	
-	int startGame(int players = 0, int fieldSize = 8, Renderer* r = NULL);
+	int startGame(int players = 0, int fieldSize = 8, Renderer* r = 0);
 	void reset();
 	
 	int move(float x, float y); // Coordinates in [0.0, 1.0[
 
 private:
-	Field field; // Field
-	vector<vector<bool> > roll; // Map of elements that roll over in the next iteration
-	int size; // Size of the field
+	Map map; // Map
+	vector<vector<bool> > rollMap; // Map of elements that roll over in the next iteration
+//	int size; // Size of the field
 	
 	int player[5]; // Array that holds the actual points of each player
 	int currentPlayer;
@@ -40,7 +40,7 @@ private:
 	
 	bool running; // Game is running?
 
-	void changeOwner(Element *e, int p);
+	void changeOwner(Field *f, int p);
 
 	int over();
 	void next();

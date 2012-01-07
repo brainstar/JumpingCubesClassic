@@ -23,7 +23,7 @@ Game::~Game()
 int Game::setPlayers(int i)
 {
 	// Range check
-	if (i < 0 || i > 4)
+	if (i < 1 || i > 4)
 	{
 		return 0;
 	}
@@ -34,18 +34,18 @@ int Game::setPlayers(int i)
 }
 
 int Game::setFieldSize(int a) {
-	if (size == a || a < 3 || a > 20) {
-		return size;
+	if (map.size == a || a < 3 || a > 20) {
+		return map->size;
 	}
 
-	size = a;
-	
-	Element e;
-	e.x = e.y = e.owner = e.value = e.n = 0;
-	vector<Element> row = vector<Element>(size, e);
-	field.resize(size, row);
-	
-	roll = vector<vector<bool> >(size, vector<bool>(size, false));
+	map.size = a;
+
+	Field f;
+	f.x = f.y = f.owner = f.value = f.n = 0;
+	vector<Field> row = vector<Field>(size, f);
+	map.m.resize(size, row);
+
+	rollMap = vector<vector<bool> >(size, vector<bool>(size, false));
 
 	return a;
 }
@@ -70,33 +70,36 @@ int Game::startGame(int players, int fieldSize, Renderer* r) {
 
 	running = true;
 
+	renderer->push(map);
+	renderer->flush();
+
 	return 1;
 }
 
 void Game::reset() {
 	running = false;
 	
-	Element e;
+	Field f;
 	
 	for (int i = 0; i < size; i++) {
-		vector<Element> row = vector<Element>(size);
+		vector<Field> row = vector<Field>(size);
 		for (int j = 0; j < size; j++) {
-			e.x = i;
-			e.y = j;
-			e.owner = 0;
-			e.value = 1;
+			f.x = i;
+			f.y = j;
+			f.owner = 0;
+			f.value = 1;
 			
-			e.n = 4;
+			f.n = 4;
 			if (0 == i % size) {
-				e.n--;
+				f.n--;
 			}
 			if (0 == j % size) {
-				e.n--;
+				f.n--;
 			}
 			
 			row[j] = e;
 		}
-		field[i] = row;
+		map.m[i] = row;
 	}
 	
 	player[0] = size * size;
@@ -106,7 +109,7 @@ void Game::reset() {
 	currentPlayer = 1;
 	
 	if (renderer) {
-		renderer->push(field);
+		renderer->push(map);
 		renderer->flush();
 	}
 }
@@ -117,22 +120,22 @@ int Game::move(float x, float y) {
 		return 0;
 	}
 	// Transform [0.0, 1.0[ itno [0, size[
-	int ix = (int) (x * size);
-	int iy = (int) (y * size);
+	int ix = (int) (x * map.size);
+	int iy = (int) (y * map.size);
 	
 	// Permission check
-	Element *e = &(field[ix][iy]);
-	if (e->owner && e->owner != currentPlayer) {
+	Field *f = &(map.m[ix][iy]);
+	if (f->owner && f->owner != currentPlayer) {
 		return 0;
 	}
 	
 	// Increase value and push output
-	e->value++;
-	changeOwner(e, currentPlayer);
-	renderer->push(field);
+	f->value++;
+	changeOwner(f, currentPlayer);
+	renderer->push(map);
 	
 	// Set starting conditions for roll
-	roll[ix][iy] = true;
+	rollMap[ix][iy] = true;
 	bool bRoll = true;
 	
 	// Roll
@@ -141,32 +144,32 @@ int Game::move(float x, float y) {
 		vector<vector<bool> > newRoll = vector<vector<bool> >(size, vector<bool>(size, false));
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				if (roll[i][j]) {
-					e = &(field[i][j]);
-					
-					if (e->value > e->n) {
+				if (rollMap[i][j]) {
+					f = &(map.m[i][j]);
+
+					if (f->value > f->n) {
 						bRoll = true;
-						e->value -= e->n;
-						if (i > 0) {
-							Element *x = &(field[i-1][j]);
-							x->value++;
-							changeOwner(x, currentPlayer);
-							newRoll[i-1][j] = true;
+						f->value -= f->n;
+							if (i > 0) {
+								Field *x = &(map.m[i-1][j]);
+								x->value++;
+								changeOwner(x, currentPlayer);
+								newRoll[i-1][j] = true;
 						}
 						if (i < size - 1) {
-							Element *x = &(field[i+1][j]);
+							Field *x = &(map.m[i+1][j]);
 							x->value++;
 							changeOwner(x, currentPlayer);
 							newRoll[i+1][j] = true;
 						}
 						if (j > 0) {
-							Element *x = &(field[i][j-1]);
+							Field *x = &(map.m[i][j-1]);
 							x->value++;
 							changeOwner(x, currentPlayer);
 							newRoll[i][j-1] = true;
 						}
 						if (j < size - 1) {
-							Element *x = &(field[i][j+1]);
+							Field *x = &(map.m[i][j+1]);
 							x->value++;
 							changeOwner(x, currentPlayer);
 							newRoll[i][j+1] = true;
@@ -177,10 +180,11 @@ int Game::move(float x, float y) {
 		}
 		
 		// Update roll information
-		roll = newRoll;
+		rollMap = newRoll;
 		
 		// Push the new field to the renderer
-		renderer->push(field);
+		renderer->push(map);
+
 		if (int winner = over()) {
 			renderer->gameOver(winner);
 			bRoll = false;
@@ -193,11 +197,11 @@ int Game::move(float x, float y) {
 	return currentPlayer;
 }
 
-void Game::changeOwner(Element *e, int p) {
+void Game::changeOwner(Field *f, int p) {
 	if (p > 0 && p <= players) {
-		player[e->owner]--;
-		e->owner = p;
-		player[e->owner]++;
+		player[f->owner]--;
+		f->owner = p;
+		player[f->owner]++;
 	}
 }
 
