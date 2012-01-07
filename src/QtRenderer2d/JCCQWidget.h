@@ -23,10 +23,7 @@ public:
 	~JCCQWidget();
 	
 	void setRenderer(QtRenderer* r);
-	void startTimer();
-	void update(Field f);
-	void update();
-	void setFieldSize(int f);
+	void startAnimation();
 	
 public slots:
 	void mouseClicked(float x, float y);
@@ -36,9 +33,8 @@ public slots:
 protected: 
 
 signals:
-	void setFieldSize(int a);
-	void draw(Field f);
-	void draw();
+	void signalDraw(Map f);
+	void signalDraw();
 	
 private:
 	QOpenGLWidget* gl;

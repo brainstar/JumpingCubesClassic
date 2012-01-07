@@ -7,6 +7,7 @@
 
 #include <QMenuBar>
 #include <QVBoxLayout>
+#include <iostream>
 #include "JCCQWidget.h"
 using namespace std;
 
@@ -15,7 +16,7 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	this->resize(500, 500);
 	
 	timer = new QTimer();
-	timer->setInterval(200);
+	timer->setInterval(1000);
 	
 	QMenuBar *menubar = new QMenuBar();
 	QAction *action;
@@ -36,10 +37,9 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	
 	connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
 	connect(gl, SIGNAL(mouseClicked(float, float)), this, SLOT(mouseClicked(float, float)));
-	connect(this, SIGNAL(setFieldSize(int)), gl, SLOT(setFieldSize(int)));
-	connect(this, SIGNAL(draw(Field)), gl, SLOT(draw(Field)));
-	connect(this, SIGNAL(draw()), gl, SLOT(draw()));
-	
+	connect(this, SIGNAL(signalDraw(Map)), gl, SLOT(slotDraw(Map)));
+	connect(this, SIGNAL(signalDraw()), gl, SLOT(slotDraw()));
+
 	gl->show();
 	this->show();
 }
@@ -51,20 +51,9 @@ void JCCQWidget::setRenderer(QtRenderer* r) {
 	renderer = r;
 }
 
-void JCCQWidget::startTimer() {
+void JCCQWidget::startAnimation() {
 	timer->start();
-}
-
-void JCCQWidget::update(Field f) {
-	emit draw(f);
-}
-
-void JCCQWidget::update() {
-	emit draw();
-}
-
-void JCCQWidget::setFieldSize(int f) {
-	gl->setFieldSize(f);
+	timerTick();
 }
 
 void JCCQWidget::mouseClicked(float x, float y) {
@@ -72,7 +61,7 @@ void JCCQWidget::mouseClicked(float x, float y) {
 		return;
 	}
 	
-	int player = renderer->mouseEvent(x, y);
+	int player = renderer->mapEvent(x, y);
 	if (player == 0) {
 		status->showMessage("Invalid move", 2000);
 	}
@@ -87,8 +76,14 @@ void JCCQWidget::timerTick() {
 	if (!renderer) {
 		return;
 	}
-	if (renderer->update()) {
+
+	Map m = renderer->update();
+	if (!m) {
 		timer->stop();
+	}
+	else 
+	{
+		emit signalDraw(m);
 	}
 }
 
