@@ -35,7 +35,7 @@ void QOpenGLWidget::slotDraw(Map m) {
 }
 
 void QOpenGLWidget::slotDraw() {
-	paintGL();
+	updateGL();
 }
 
 void QOpenGLWidget::initializeGL() {
@@ -57,12 +57,12 @@ void QOpenGLWidget::resizeGL(int w, int h) {
 	h = h ? h : 1;
 	w = w ? w : 1;
 
-	glViewport(0, 0, h, h);
+	glViewport(0, 0, w, h);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	glOrtho(0., 10., 0., 10., 1.0, -1.0);
+	glOrtho(0., 10., 10., 0., 1.0, -1.0);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -92,17 +92,16 @@ void QOpenGLWidget::paintGL() {
 			x2 = x1 + w;
 			y2 = y1 + w;
 			
-//			glColor3fv(colors[f->owner]);
-			glColor3f(0.0f, 1.0f, 0.0f);
+			glColor3fv(colors[f->owner]);
+//			glColor3f(0.0f, 1.0f, 0.0f);
 			
 //			qDebug("%f|%f - %f|%f - %f|%f - %f|%f", x1, y1, x2, y1, x2, y2, x1, y2);
-			if (i == 0 && j == 0) {
 			glBegin(GL_QUADS);
 				glVertex3f(x1, y1, 0.0f);
 				glVertex3f(x2, y1, 0.0f);
 				glVertex3f(x2, y2, 0.0f);
 				glVertex3f(x1, y2, 0.0f);
-			glEnd(); }
+			glEnd();
 		}
 	}
 }

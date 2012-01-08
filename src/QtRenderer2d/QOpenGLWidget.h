@@ -10,6 +10,7 @@
 
 #include <QtOpenGL/qgl.h>
 #include <QMouseEvent>
+#include <QTimer>
 #include "../JCCTypes.h"
 using namespace std;
 

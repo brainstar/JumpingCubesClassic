@@ -8,46 +8,12 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game()
-{
-	setPlayers(2);
-	setFieldSize(5);
+Game::Game() {
 	renderer = 0;
-	reset();
+	reset(2, 5);
 }
 
-Game::~Game()
-{
-}
-
-int Game::setPlayers(int i)
-{
-	// Range check
-	if (i < 1 || i > 4)
-	{
-		return 0;
-	}
-	// Set amount of players
-	players = i;
-
-	return 1;
-}
-
-int Game::setFieldSize(int a) {
-	if (map.size == a || a < 3 || a > 20) {
-		return map.size;
-	}
-
-	map.size = a;
-
-	Field f;
-	f.x = f.y = f.owner = f.value = f.n = 0;
-	vector<Field> row = vector<Field>(map.size, f);
-	map.m.resize(map.size, row);
-
-	rollMap = vector<vector<bool> >(map.size, vector<bool>(map.size, false));
-
-	return a;
+Game::~Game() {
 }
 
 int Game::setRenderer(Renderer* r) {
@@ -64,50 +30,74 @@ int Game::startGame(int players, int fieldSize, Renderer* r) {
 		return 0;
 	}
 	
-	setPlayers(players);
-	setFieldSize(fieldSize);
-	setRenderer(renderer);
+	setRenderer(r);
 
+	reset(players, fieldSize);
 	running = true;
-
-	renderer->push(map);
-	renderer->flush();
 
 	return 1;
 }
 
 void Game::reset() {
+	reset(players, map.size);
+}
+
+void Game::reset(int p, int s) {
+	// Stop Game
 	running = false;
-	
+	// Instantiate empty Field f for multiple purposes
 	Field f;
+
+	// Map size and player count range check
+	if (s < 4 || s > 20) {
+		return;
+	}
+	if (p < 1 || p > 4) {
+		return;
+	}
 	
+	// Set amount of players
+	players = p;
+	
+	// Update map size
+	map.size = s;
+	maxcount = s * s;
+	// Resize map
+	map.m.resize(map.size, vector<Field>(map.size, f));
+	// Resize roll map
+	rollMap = vector<vector<bool> >(map.size, vector<bool>(map.size, false));
+	
+	// Fill map with data
 	for (int i = 0; i < map.size; i++) {
 		vector<Field> row = vector<Field>(map.size);
 		for (int j = 0; j < map.size; j++) {
-			f.x = i;
-			f.y = j;
-			f.owner = 0;
-			f.value = 1;
+			Field g;
+			g.x = i;
+			g.y = j;
+			g.owner = 0;
+			g.value = 1;
 			
-			f.n = 4;
-			if (0 == i % map.size) {
-				f.n--;
+			g.n = 4;
+			if (0 == i % (map.size - 1)) {
+				g.n--;
 			}
-			if (0 == j % map.size) {
-				f.n--;
+			if (0 == j % (map.size - 1)) {
+				g.n--;
 			}
 			
-			row[j] = f;
+			row[j] = g;
 		}
 		map.m[i] = row;
 	}
 	
-	player[0] = map.size * map.size;
+	// Fill field statistics with data
+	player[0] = maxcount;
 	for (int i = 1; i < 5; i++) {
 		player[i] = 0;
 	}
 	currentPlayer = 1;
 	
+	// If renderer is available, push the map to the renderer
 	if (renderer) {
 		renderer->push(map);
 		renderer->flush();
@@ -151,11 +141,11 @@ int Game::move(float x, float y) {
 					if (f->value > f->n) {
 						bRoll = true;
 						f->value -= f->n;
-							if (i > 0) {
-								Field *x = &(map.m[i-1][j]);
-								x->value++;
-								changeOwner(x, currentPlayer);
-								newRoll[i-1][j] = true;
+						if (i > 0) {
+							Field *x = &(map.m[i-1][j]);
+							x->value++;
+							changeOwner(x, currentPlayer);
+							newRoll[i-1][j] = true;
 						}
 						if (i < map.size - 1) {
 							Field *x = &(map.m[i+1][j]);
@@ -185,15 +175,20 @@ int Game::move(float x, float y) {
 		
 		// Push the new field to the renderer
 		renderer->push(map);
-
-		if (int winner = over()) {
-			renderer->gameOver(winner);
+		
+		// Over
+		if (over()) {
 			bRoll = false;
-			running = false;
 		}
-		else {
-			next();
-		}
+	}
+	
+	if (int winner = over()) {
+		renderer->gameOver(winner);
+		running = false;
+		cout << "Wheee!!!" << endl;
+	}
+	else {
+		next();
 	}
 	
 	return currentPlayer;
@@ -212,7 +207,7 @@ int Game::over()
 	// Someone just won the game?
 	for (int i = 0; i < players; i++)
 	{
-		if (player[i] == 100)
+		if (player[i] == maxcount)
 		{
 			// Yey! Return the glory winner
 			return i;
@@ -226,8 +221,8 @@ int Game::over()
 void Game::next()
 {
 	// Move on to next player 
-//	do {
+	do {
 		currentPlayer = (currentPlayer % players) + 1;
-//	}
-//	while (!(player[currentPlayer]) && !(player[0]));
+	}
+	while (!(player[currentPlayer]) && !(player[0]));
 }

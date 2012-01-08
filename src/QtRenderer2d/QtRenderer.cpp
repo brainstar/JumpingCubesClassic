@@ -49,12 +49,12 @@ void QtRenderer::push(Map m) {
 }
 
 void QtRenderer::flush() {
-	if (!display) {
-		return;
-	}
-	
 	while (maps.size() > 1) {
 		maps.pop_front();
+	}
+	
+	if (!display) {
+		return;
 	}
 
 	display->startAnimation();

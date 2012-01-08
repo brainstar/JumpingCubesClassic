@@ -10,7 +10,7 @@ public:
 		x = 0;
 		y = 0;
 		owner = 0;
-		value = 0;
+		value = 1;
 		n = 0;
 	}
 

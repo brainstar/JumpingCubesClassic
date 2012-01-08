@@ -16,7 +16,7 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	this->resize(500, 500);
 	
 	timer = new QTimer();
-	timer->setInterval(1000);
+	timer->setInterval(100);
 	
 	QMenuBar *menubar = new QMenuBar();
 	QAction *action;
@@ -54,7 +54,7 @@ void JCCQWidget::setRenderer(QtRenderer* r) {
 void JCCQWidget::startAnimation() {
 	if (!(timer->isActive())) {
 		timer->start();
-		timerTick();
+//		timerTick();
 	}
 }
 
