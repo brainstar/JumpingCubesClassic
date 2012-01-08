@@ -7,6 +7,8 @@
 
 #include "QtRenderer.h"
 #include "JCCQWidget.h"
+#include <iostream>
+using namespace std;
 
 //TODO: Much to do
 
@@ -58,14 +60,21 @@ void QtRenderer::flush() {
 	display->startAnimation();
 }
 
+bool QtRenderer::listEmpty() {
+	if (maps.size())  {
+		return false;
+	}
+	return true;
+}
+
 Map QtRenderer::update() {
-	if (fields.size() > 0) {
-		Map a = fields.front();
-		fields.pop_front();
-		return a;
+	if (maps.size() <= 0) {
+		unexpected();
 	}
 	
-	return 0;
+	Map map = maps.front();
+	maps.pop_front();
+	return map;
 }
 
 void QtRenderer::gameOver(int winner) {
@@ -73,7 +82,7 @@ void QtRenderer::gameOver(int winner) {
 	display->gameOver(winner);
 }
 
-int QtRenderer::mouseEvent(float x, float y) {
+int QtRenderer::mapEvent(float x, float y) {
 	if (running) {
 		return game->move(x, y);
 	}

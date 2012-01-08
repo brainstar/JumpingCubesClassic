@@ -12,6 +12,7 @@ QOpenGLWidget::QOpenGLWidget(QWidget *parent, char *name) : QGLWidget(parent) {
 	for (int i = 0; i < 3; i++) {
 		colors[0][i] = 0.5f;
 	}
+	
 	colors[1][0] = 1.0f;
 	colors[1][1] = colors[1][2] = 0.0f;
 	
@@ -21,21 +22,19 @@ QOpenGLWidget::QOpenGLWidget(QWidget *parent, char *name) : QGLWidget(parent) {
 	colors[3][2] = 1.0f;
 	colors[3][0] = colors[3][1] = 0.0f;
 	
-	colors[4][0] = colors[4][1] = 1.0f;
 	colors[4][2] = 0.0f;
+	colors[4][0] = colors[4][1] = 1.0f;
 }
 
 QOpenGLWidget::~QOpenGLWidget() {
 }
 
 void QOpenGLWidget::slotDraw(Map m) {
-	qDebug("in slotDraw(Map)?");
 	map = m;
 	slotDraw();
 }
 
 void QOpenGLWidget::slotDraw() {
-	qDebug("in slotDraw()");
 	paintGL();
 }
 
@@ -70,39 +69,40 @@ void QOpenGLWidget::resizeGL(int w, int h) {
 }
 
 void QOpenGLWidget::paintGL() {
-	qDebug("in paintGL?");
 	// Draw everything
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	
+	if (map.size <= 0) {
+		return;
+	}
+	
 	Field *f;
-	for (int i = 0; i < fields; i++) {
-		for (int j = 0; j < fields; j++) {
-			f = &(map->m[i][j]);
+	float s = (float) map.size;
+	for (int i = 0; i < map.size; i++) {
+		for (int j = 0; j < map.size; j++) {
+			f = &(map.m[i][j]);
 			
-			int v = f->value;
-			int s = map->size;
+			float v = (float) f->value;
  			float w = (1.0 / s) * v;
  			
 			float x1, y1, x2, y2;
-			x1 = 10.0 / s * i + (5.0 / s - w / 2.);
-			y1 = 10.0 / s * j + (5.0 / s - w / 2.);
+			x1 = 10.0f / s * i + (5.0f / s - w / 2.f);
+			y1 = 10.0f / s * j + (5.0f / s - w / 2.f);
 			x2 = x1 + w;
 			y2 = y1 + w;
 			
-			glColor3fv(colors[f->owner]);
+//			glColor3fv(colors[f->owner]);
+			glColor3f(0.0f, 1.0f, 0.0f);
 			
+//			qDebug("%f|%f - %f|%f - %f|%f - %f|%f", x1, y1, x2, y1, x2, y2, x1, y2);
+			if (i == 0 && j == 0) {
 			glBegin(GL_QUADS);
-				glVertex2f(x1, y1);
-				glVertex2f(x2, y1);
-				glVertex2f(x2, y2);
-				glVertex2f(x1, y2);
-			glEnd();
-			glBegin(GL_POINTS);
-				glVertex2f(0.0f, 0.0f);
-				glVertex2f(1.0f, 0.0f);
-				glVertex2f(1.0f, 1.0f);
-			glEnd();
+				glVertex3f(x1, y1, 0.0f);
+				glVertex3f(x2, y1, 0.0f);
+				glVertex3f(x2, y2, 0.0f);
+				glVertex3f(x1, y2, 0.0f);
+			glEnd(); }
 		}
 	}
 }

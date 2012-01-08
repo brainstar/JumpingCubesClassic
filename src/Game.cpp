@@ -10,7 +10,7 @@
 
 Game::Game()
 {
-	setPlayers(0);
+	setPlayers(2);
 	setFieldSize(5);
 	renderer = 0;
 	reset();
@@ -35,17 +35,17 @@ int Game::setPlayers(int i)
 
 int Game::setFieldSize(int a) {
 	if (map.size == a || a < 3 || a > 20) {
-		return map->size;
+		return map.size;
 	}
 
 	map.size = a;
 
 	Field f;
 	f.x = f.y = f.owner = f.value = f.n = 0;
-	vector<Field> row = vector<Field>(size, f);
-	map.m.resize(size, row);
+	vector<Field> row = vector<Field>(map.size, f);
+	map.m.resize(map.size, row);
 
-	rollMap = vector<vector<bool> >(size, vector<bool>(size, false));
+	rollMap = vector<vector<bool> >(map.size, vector<bool>(map.size, false));
 
 	return a;
 }
@@ -81,28 +81,28 @@ void Game::reset() {
 	
 	Field f;
 	
-	for (int i = 0; i < size; i++) {
-		vector<Field> row = vector<Field>(size);
-		for (int j = 0; j < size; j++) {
+	for (int i = 0; i < map.size; i++) {
+		vector<Field> row = vector<Field>(map.size);
+		for (int j = 0; j < map.size; j++) {
 			f.x = i;
 			f.y = j;
 			f.owner = 0;
 			f.value = 1;
 			
 			f.n = 4;
-			if (0 == i % size) {
+			if (0 == i % map.size) {
 				f.n--;
 			}
-			if (0 == j % size) {
+			if (0 == j % map.size) {
 				f.n--;
 			}
 			
-			row[j] = e;
+			row[j] = f;
 		}
 		map.m[i] = row;
 	}
 	
-	player[0] = size * size;
+	player[0] = map.size * map.size;
 	for (int i = 1; i < 5; i++) {
 		player[i] = 0;
 	}
@@ -119,7 +119,8 @@ int Game::move(float x, float y) {
 	if (x < 0. || x >= 1. || y < 0. || y >= 1.) {
 		return 0;
 	}
-	// Transform [0.0, 1.0[ itno [0, size[
+	
+	// Transform [0.0, 1.0[ into [0, size[
 	int ix = (int) (x * map.size);
 	int iy = (int) (y * map.size);
 	
@@ -141,9 +142,9 @@ int Game::move(float x, float y) {
 	// Roll
 	while (bRoll) {
 		bRoll = false;
-		vector<vector<bool> > newRoll = vector<vector<bool> >(size, vector<bool>(size, false));
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
+		vector<vector<bool> > newRoll = vector<vector<bool> >(map.size, vector<bool>(map.size, false));
+		for (int i = 0; i < map.size; i++) {
+			for (int j = 0; j < map.size; j++) {
 				if (rollMap[i][j]) {
 					f = &(map.m[i][j]);
 
@@ -156,7 +157,7 @@ int Game::move(float x, float y) {
 								changeOwner(x, currentPlayer);
 								newRoll[i-1][j] = true;
 						}
-						if (i < size - 1) {
+						if (i < map.size - 1) {
 							Field *x = &(map.m[i+1][j]);
 							x->value++;
 							changeOwner(x, currentPlayer);
@@ -168,7 +169,7 @@ int Game::move(float x, float y) {
 							changeOwner(x, currentPlayer);
 							newRoll[i][j-1] = true;
 						}
-						if (j < size - 1) {
+						if (j < map.size - 1) {
 							Field *x = &(map.m[i][j+1]);
 							x->value++;
 							changeOwner(x, currentPlayer);
@@ -194,6 +195,7 @@ int Game::move(float x, float y) {
 			next();
 		}
 	}
+	
 	return currentPlayer;
 }
 
@@ -223,9 +225,9 @@ int Game::over()
 
 void Game::next()
 {
-	// Move on to next player
-	do {
-		currentPlayer = currentPlayer % players + 1;
-	}
-	while (!player[currentPlayer] && !player[0]);
+	// Move on to next player 
+//	do {
+		currentPlayer = (currentPlayer % players) + 1;
+//	}
+//	while (!(player[currentPlayer]) && !(player[0]));
 }

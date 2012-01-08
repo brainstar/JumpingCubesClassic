@@ -24,10 +24,11 @@ public:
 	
 	void push(Map m);
 	void flush();
+	bool listEmpty();
 	Map update();
 	void gameOver(int winner);
 	
-	int mouseEvent(float x, float y);
+	int mapEvent(float x, float y);
 	
 private:
 	Game *game;

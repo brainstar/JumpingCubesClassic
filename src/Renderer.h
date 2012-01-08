@@ -15,7 +15,7 @@ class Renderer {
 public:
 	Renderer() {}
 	
-	virtual void push(Map f) = 0;
+	virtual void push(Map m) = 0;
 	virtual void flush() = 0;
 	virtual void gameOver(int winner) = 0;
 };

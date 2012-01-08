@@ -11,7 +11,7 @@ if (SDL_FOUND)
 	set(CMAKE_HAVE_SDL true)
 endif (SDL_FOUND)
 
-configure_file(${JCC_SOURCE_DIR}/src/renderers.h.in src/renderers.h)
+configure_file(${JCC_SOURCE_DIR}/src/renderers.h.in renderers.h)
 include_directories(${JCC_BINARY_DIR}/src)
 
 set(JCC_SOURCES ${JCC_SOURCES} main.cpp Game.cpp)
@@ -23,10 +23,11 @@ if (QT4_FOUND)
 	add_definitions(${QT_DEFINITIONS})
 	
 	set(QT_USE_QTOPENGL true)
+	set(QT_USE_QTGUI true)
 	QT4_WRAP_CPP(QtRenderer2d_HEADERS_MOC ${QtRenderer2d_HEADERS})
 	add_library(QtRenderer2d ${QtRenderer2d_SOURCES} ${QtRenderer2d_HEADERS_MOC})
 	
-	set(LIBS ${LIBS} QtRenderer2d ${QT_QTCORE_LIBRARY} ${QT_QTOPENGL_LIBRARY})
+	set(LIBS ${LIBS} QtRenderer2d ${QT_QTCORE_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} -lGL)
 endif (QT4_FOUND)
 
 add_executable (../JumpingCubesClassic ${JCC_SOURCES})

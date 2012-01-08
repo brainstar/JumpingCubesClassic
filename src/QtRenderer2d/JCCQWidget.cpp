@@ -86,13 +86,11 @@ void JCCQWidget::timerTick() {
 		return;
 	}
 
-	Map m = renderer->update();
-	if (!m) {
+	if (renderer->listEmpty()) {
 		timer->stop();
 	}
-	else 
-	{
-		emit signalDraw(m);
+	else {
+		emit signalDraw(renderer->update());
 	}
 }
 
