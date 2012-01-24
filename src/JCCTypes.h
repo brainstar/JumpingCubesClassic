@@ -33,7 +33,7 @@ public:
 class Map {
 public:
 	Map() {
-		size = 1;
+		size = 0;
 		Field f;
 		m.resize(size, vector<Field>(size, f));
 	}
