@@ -13,39 +13,27 @@ using namespace std;
 //TODO: Much to do
 
 QtRenderer::QtRenderer() {
+	display = NULL;
+	game = NULL;
 	display = new JCCQWidget(this);
-	running = false;
 }
 
 QtRenderer::~QtRenderer() {
 }
 
-void QtRenderer::setGame(Game *g) {
-	game = g;
+Game* QtRenderer::setGame(Game *g) {
+	if (g) game = g;
+	
+	return g;
 }
 
-void QtRenderer::startGame(int players, int fieldsize) {
-	if (!running) {
-		running = game->startGame(players, fieldsize, this);
-	}
-}
-
-void QtRenderer::stopGame() {
-	if (running) {
-		game->reset();
-		running = false;
-	}
-}
-
-void QtRenderer::toggleGame(bool b) {
-	running = b;
+void QtRenderer::newGame(int players, int fieldsize) {
+	if (game) game->newGame(players, fieldsize, this);
 }
 
 void QtRenderer::push(Map m) {
-	if (running) {
-		maps.push_back(m);
-		display->startAnimation();
-	}
+	maps.push_back(m);
+	if (display) display->startAnimation();
 }
 
 void QtRenderer::flush() {
@@ -53,11 +41,7 @@ void QtRenderer::flush() {
 		maps.pop_front();
 	}
 	
-	if (!display) {
-		return;
-	}
-
-	display->startAnimation();
+	if (display) display->startAnimation();
 }
 
 bool QtRenderer::listEmpty() {
@@ -69,7 +53,7 @@ bool QtRenderer::listEmpty() {
 
 Map QtRenderer::update() {
 	if (maps.size() <= 0) {
-		unexpected();
+		// TODO: In strong need of a "Get me an empty map"-helper-method
 	}
 	
 	Map map = maps.front();
@@ -77,14 +61,6 @@ Map QtRenderer::update() {
 	return map;
 }
 
-void QtRenderer::gameOver(int winner) {
-	running = false;
-	display->gameOver(winner);
-}
-
-int QtRenderer::mapEvent(float x, float y) {
-	if (running) {
-		return game->move(x, y);
-	}
-	return -1;
+int QtRenderer::mapEvent(int x, int y) {
+	return game->move(x, y);
 }

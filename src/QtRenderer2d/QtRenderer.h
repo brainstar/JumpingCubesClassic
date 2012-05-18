@@ -17,22 +17,21 @@ public:
 	QtRenderer();
 	~QtRenderer();
 	
-	void setGame(Game *g);
-	void startGame(int players = 0, int fieldsize = 0);
-	void stopGame();
-	void toggleGame(bool b);
+	Game* setGame(Game *g);
+
+	// Display access
+	void newGame(int players = 0, int fieldsize = 0);
+	int mapEvent(int x, int y);
+	Map update();
 	
+	// Game access 
 	void push(Map m);
 	void flush();
+
 	bool listEmpty();
-	Map update();
-	void gameOver(int winner);
-	
-	int mapEvent(float x, float y);
 	
 private:
 	Game *game;
-	bool running;
 	class JCCQWidget *display;
 	list<Map> maps;
 };
