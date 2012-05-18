@@ -18,30 +18,34 @@ public:
 	Game();
 	~Game();
 
-	int setRenderer(Renderer* r);
-	
-	int startGame(int players = 0, int fieldSize = 8, Renderer* r = 0);
-	void reset(int p, int s);
-	void reset();
-	
+	// Set Renderer interface
+	Renderer* setRenderer(Renderer* r);
+
+	// Start new game
+	int newGame(int players = 0, int fieldSize = 8, Renderer* r = 0);
+	// Make a move
 	int move(float x, float y); // Coordinates in [0.0, 1.0[
 
 private:
+	// Reset the game
+	void reset(int p, int s);
+
 	Map map; // Map
 	vector<vector<bool> > rollMap; // Map of elements that roll over in the next iteration
 	int maxcount; // Size of the field
 	
 	int player[5]; // Array that holds the actual points of each player
-	int currentPlayer;
+	int currentPlayer; // Int that holds the ID of player-in-turn
 	int players; // Amount of players
 	
 	Renderer* renderer; // The interface to the display
 	
-	bool running; // Game is running?
-
+	// Change the owner of a field
 	void changeOwner(Field *f, int p);
 
+	// Returns ID of winning player, or 0 if none
 	int over();
+	// Sets ID to the next player
 	void next();
 };
 
