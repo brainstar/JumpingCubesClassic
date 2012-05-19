@@ -35,6 +35,7 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	
 	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(menubar, 0);
+	layout->addStretch(0);
 	layout->addWidget(gl, 1);
 	layout->addWidget(status, 0);
 	this->setLayout(layout);
