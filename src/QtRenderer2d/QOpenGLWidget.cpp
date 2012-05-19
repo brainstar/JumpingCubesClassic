@@ -31,6 +31,12 @@ QOpenGLWidget::~QOpenGLWidget() {
 
 void QOpenGLWidget::slotDraw(Map m) {
 	map = m;
+	if (map.size() == 0) {
+		hide();
+	}
+	else {
+		show();
+	}
 	slotDraw();
 }
 

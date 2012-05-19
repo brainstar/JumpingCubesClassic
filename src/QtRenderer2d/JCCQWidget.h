@@ -30,6 +30,7 @@ public slots:
 	void mouseClicked(int x, int y);
 	void timerTick();
 	void newGame();
+	void closeGame();
 	
 protected: 
 

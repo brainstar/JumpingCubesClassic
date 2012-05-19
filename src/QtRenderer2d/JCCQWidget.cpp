@@ -25,8 +25,10 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	QMenu *menu;
 	
 	menu = menubar->addMenu("Game");
-	action = menu->addAction("New");
+	action = menu->addAction("New Game");
 	connect(action, SIGNAL(triggered()), this, SLOT(newGame()));
+	action = menu->addAction("Close Game");
+	connect(action, SIGNAL(triggered()), this, SLOT(closeGame()));
 	
 	gl = new QOpenGLWidget();
 	status = new QStatusBar();
@@ -42,7 +44,7 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	connect(this, SIGNAL(signalDraw(Map)), gl, SLOT(slotDraw(Map)));
 	connect(this, SIGNAL(signalDraw()), gl, SLOT(slotDraw()));
 
-	gl->show();
+	gl->hide();
 	this->show();
 }
 
@@ -110,10 +112,22 @@ void JCCQWidget::newGame() {
 	if (!renderer) {
 		return;
 	}
-	if (!(renderer->newGame())) {
+	if (!(renderer->newGame(2, 5))) {
 		status->showMessage("Error starting game", 2000);
 		return;
 	}
 
 	winner = 0;
+}
+
+void JCCQWidget::closeGame() {
+	if (!renderer) {
+		return;
+	}
+	if (!(renderer->newGame(0, 0))) {
+		status->showMessage("Error closing game", 2000);
+		return;
+	}
+
+	winner = -1;
 }
