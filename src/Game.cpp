@@ -36,12 +36,12 @@ int Game::newGame(int players, int fieldSize, Renderer* r) {
 
 int Game::move(int x, int y) {
 	// Range check
-	if (x < 0 || x > map.size || y < 0 || y > map.size) {
+	if (x < 0 || x > map.size() || y < 0 || y > map.size()) {
 		return -10;
 	}
 	
 	// Permission check
-	Field *f = &(map.m[x][y]);
+	Field *f = &(map[x][y]);
 	if (f->owner && f->owner != currentPlayer) {
 		return 0;
 	}
@@ -61,17 +61,17 @@ int Game::move(int x, int y) {
 		bRoll = false;
 		
 		// Create new bool field with same size as map
-		vector<vector<bool> > newRoll = vector<vector<bool> >(map.size, vector<bool>(map.size, false));
+		vector<vector<bool> > newRoll = vector<vector<bool> >(map.size(), vector<bool>(map.size(), false));
 		
 		// Check every field about +1
-		for (int i = 0; i < map.size; i++) {
-			for (int j = 0; j < map.size; j++) {
+		for (int i = 0; i < map.size(); i++) {
+			for (int j = 0; j < map.size(); j++) {
 			
 				// This field got +1?
 				if (rollMap[i][j]) {
 				
 					// Get a pointer to this field
-					f = &(map.m[i][j]);
+					f = &(map[i][j]);
 
 					// This field rolls?
 					if (f->value > f->n) {
@@ -85,7 +85,7 @@ int Game::move(int x, int y) {
 						// Left neighbour does exist?
 						if (i > 0) {
 							// Get iterator
-							Field *x = &(map.m[i-1][j]);
+							Field *x = &(map[i-1][j]);
 							// +1
 							x->value++;
 							// New owner
@@ -94,22 +94,22 @@ int Game::move(int x, int y) {
 							newRoll[i-1][j] = true;
 						}
 						// Right neighbour does exist?
-						if (i < map.size - 1) {
-							Field *x = &(map.m[i+1][j]);
+						if (i < map.size() - 1) {
+							Field *x = &(map[i+1][j]);
 							x->value++;
 							changeOwner(x, currentPlayer);
 							newRoll[i+1][j] = true;
 						}
 						// Upper neighbour does exist?
 						if (j > 0) {
-							Field *x = &(map.m[i][j-1]);
+							Field *x = &(map[i][j-1]);
 							x->value++;
 							changeOwner(x, currentPlayer);
 							newRoll[i][j-1] = true;
 						}
 						// Lower neighbour does exist?
-						if (j < map.size - 1) {
-							Field *x = &(map.m[i][j+1]);
+						if (j < map.size() - 1) {
+							Field *x = &(map[i][j+1]);
 							x->value++;
 							changeOwner(x, currentPlayer);
 							newRoll[i][j+1] = true;
@@ -147,7 +147,7 @@ int Game::move(int x, int y) {
 
 Map Game::getEmptyMap() {
 	Map m;
-	m.resize(map.size);
+	m.resize(map.size());
 	return m;
 }
 
@@ -171,12 +171,12 @@ void Game::reset(int p, int s) {
 	maxcount = s * s;
 	
 	// Resize roll map
-	rollMap = vector<vector<bool> >(map.size, vector<bool>(map.size, false));
+	rollMap = vector<vector<bool> >(map.size(), vector<bool>(map.size(), false));
 	
 	// Fill map with data
-	for (int i = 0; i < map.size; i++) {
-		vector<Field> row = vector<Field>(map.size);
-		for (int j = 0; j < map.size; j++) {
+	for (int i = 0; i < map.size(); i++) {
+		vector<Field> row = vector<Field>(map.size());
+		for (int j = 0; j < map.size(); j++) {
 			Field g;
 			g.x = i;
 			g.y = j;
@@ -184,16 +184,16 @@ void Game::reset(int p, int s) {
 			g.value = 1;
 			
 			g.n = 4;
-			if (0 == i % (map.size - 1)) {
+			if (0 == i % (map.size() - 1)) {
 				g.n--;
 			}
-			if (0 == j % (map.size - 1)) {
+			if (0 == j % (map.size() - 1)) {
 				g.n--;
 			}
 			
 			row[j] = g;
 		}
-		map.m[i] = row;
+		map[i] = row;
 	}
 	
 	// Fill field statistics with data

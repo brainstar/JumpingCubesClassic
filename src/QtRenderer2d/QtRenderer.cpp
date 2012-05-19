@@ -10,8 +10,6 @@
 #include <iostream>
 using namespace std;
 
-//TODO: Much to do
-
 QtRenderer::QtRenderer() {
 	display = NULL;
 	game = NULL;

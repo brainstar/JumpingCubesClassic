@@ -33,7 +33,7 @@ public:
 class Map {
 public:
 	Map() {
-		size = 0;
+		iSize = 0;
 		Field f;
 		m.resize(size, vector<Field>(size, f));
 	}
@@ -42,14 +42,28 @@ public:
 		size = rhs.size;
 		m = rhs.m;
 	}
+
+	vector<Field>& operator[] (const int i) {
+		return m[i];
+	}
 	
 	void resize(int i) {
-		size = i;
+		iSize = i;
 		Field f;
-		m.resize(size, vector<Field>(size, f));
+		m.resize(iSize, vector<Field>(size, f));
 	}
 
-	int size;
+	int size() {
+		return iSize;
+	}
+	
+	int size(int s) {
+		iSize = s;
+		return iSize;
+	}
+
+private:
+	int iSize;
 	vector<vector<Field> > m;
 };
 
