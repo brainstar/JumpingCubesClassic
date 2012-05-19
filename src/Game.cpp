@@ -10,7 +10,7 @@
 
 Game::Game() {
 	renderer = 0;
-	reset(2, 5);
+	reset(0, 0);
 }
 
 Game::~Game() {
@@ -29,14 +29,12 @@ int Game::newGame(int players, int fieldSize, Renderer* r) {
 	if (!r && !renderer) return 0;
 	if (r) setRenderer(r);
 
-	reset(players, fieldSize);
-
-	return 1;
+	return reset(players, fieldSize);
 }
 
 int Game::move(int x, int y) {
 	// Range check
-	if (x < 0 || x > map.size() || y < 0 || y > map.size()) {
+	if (x < 0 || x >= map.size() || y < 0 || y >= map.size()) {
 		return -10;
 	}
 	
@@ -151,16 +149,16 @@ Map Game::getEmptyMap() {
 	return m;
 }
 
-void Game::reset(int p, int s) {
+int Game::reset(int p, int s) {
 	// Instantiate empty Field f for multiple purposes
 	Field f;
 
 	// Map size and player count range check
-	if (s < 4 || s > 20) {
-		return;
+	if (s < 0 || s > 20) {
+		return 0;
 	}
-	if (p < 1 || p > 4) {
-		return;
+	if (p < 0 || p > 4) {
+		return 0;
 	}
 	
 	// Set amount of players
@@ -208,6 +206,8 @@ void Game::reset(int p, int s) {
 		renderer->push(map);
 		renderer->flush();
 	}
+
+	return 1;
 }
 
 void Game::changeOwner(Field *f, int p) {

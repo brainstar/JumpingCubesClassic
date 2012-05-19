@@ -24,10 +24,10 @@ public:
 	
 	void setRenderer(QtRenderer* r);
 	void startAnimation();
-	void gameOver(int winner);
+	void gameOver();
 	
 public slots:
-	void mouseClicked(float x, float y);
+	void mouseClicked(int x, int y);
 	void timerTick();
 	void newGame();
 	
@@ -42,6 +42,7 @@ private:
 	QStatusBar* status;
 	QtRenderer* renderer;
 	QTimer* timer;
+	int winner;
 };
 
 #endif

@@ -20,7 +20,7 @@ public:
 	Game* setGame(Game *g);
 
 	// Display access
-	void newGame(int players = 0, int fieldsize = 0);
+	int newGame(int players = 2, int fieldsize = 5);
 	int mapEvent(int x, int y);
 	Map update();
 	

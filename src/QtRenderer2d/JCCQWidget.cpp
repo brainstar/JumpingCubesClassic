@@ -12,6 +12,8 @@
 using namespace std;
 
 JCCQWidget::JCCQWidget(QtRenderer* r) {
+	winner = 0;
+
 	renderer = r;
 	this->resize(500, 500);
 	
@@ -36,7 +38,7 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	this->setLayout(layout);
 	
 	connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
-	connect(gl, SIGNAL(mouseClicked(float, float)), this, SLOT(mouseClicked(float, float)));
+	connect(gl, SIGNAL(mouseClicked(int, int)), this, SLOT(mouseClicked(int, int)));
 	connect(this, SIGNAL(signalDraw(Map)), gl, SLOT(slotDraw(Map)));
 	connect(this, SIGNAL(signalDraw()), gl, SLOT(slotDraw()));
 
@@ -54,24 +56,34 @@ void JCCQWidget::setRenderer(QtRenderer* r) {
 void JCCQWidget::startAnimation() {
 	if (!(timer->isActive())) {
 		timer->start();
-//		timerTick();
 	}
 }
 
-void JCCQWidget::gameOver(int winner) {
+void JCCQWidget::gameOver() {
 	QString msg = "Player ";
 	msg += winner;
 	msg += " won!";
 	status->showMessage(msg, 0);
 }
 
-void JCCQWidget::mouseClicked(float x, float y) {
+void JCCQWidget::mouseClicked(int x, int y) {
 	if (!renderer) {
+		return;
+	}
+
+	if (winner) {
 		return;
 	}
 	
 	int player = renderer->mapEvent(x, y);
-	if (player == 0) {
+	if (player == -10) {
+		status->showMessage("Invalid target", 2000);
+	}
+	else if (player < 0) {
+		winner = -player;
+		gameOver();
+	}
+	else if (player == 0) {
 		status->showMessage("Invalid move", 2000);
 	}
 	else if (player > 0) {
@@ -98,5 +110,10 @@ void JCCQWidget::newGame() {
 	if (!renderer) {
 		return;
 	}
-	renderer->startGame();
+	if (!(renderer->newGame())) {
+		status->showMessage("Error starting game", 2000);
+		return;
+	}
+
+	winner = 0;
 }

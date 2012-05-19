@@ -32,7 +32,7 @@ protected:
 	void mousePressEvent(QMouseEvent *event);
 
 signals:
-	void mouseClicked(float x, float y);
+	void mouseClicked(int x, int y);
 	
 private:
 	float colors[5][3];

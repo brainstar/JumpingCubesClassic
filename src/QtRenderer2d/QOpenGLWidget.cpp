@@ -73,15 +73,15 @@ void QOpenGLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	
-	if (map.size <= 0) {
+	if (map.size() <= 0) {
 		return;
 	}
 	
 	Field *f;
-	float s = (float) map.size;
-	for (int i = 0; i < map.size; i++) {
-		for (int j = 0; j < map.size; j++) {
-			f = &(map.m[i][j]);
+	float s = (float) map.size();
+	for (int i = 0; i < map.size(); i++) {
+		for (int j = 0; j < map.size(); j++) {
+			f = &(map[i][j]);
 			
 			float v = (float) f->value;
  			float w = (1.0 / s) * v;
@@ -110,10 +110,12 @@ void QOpenGLWidget::mousePressEvent(QMouseEvent * event) {
 	// Event processing of a mouse click	
 	if (event->button() & Qt::LeftButton) {
 		float x, y;
-		x = (float) event->x() / size().width();
-		y = (float) event->y() / size().height();
+		x = (float) event->x() / size().width() * map.size();
+		y = (float) event->y() / size().height() * map.size();
 		
-		emit mouseClicked(x, y);
+		int ix = (int) x;
+		int iy = (int) y;
+		emit mouseClicked(ix, iy);
 	}
 
 	QGLWidget::mousePressEvent(event);

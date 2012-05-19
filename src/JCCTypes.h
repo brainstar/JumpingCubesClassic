@@ -35,12 +35,14 @@ public:
 	Map() {
 		iSize = 0;
 		Field f;
-		m.resize(size, vector<Field>(size, f));
+		m.resize(iSize, vector<Field>(iSize, f));
 	}
 	
 	Map& operator=(const Map &rhs) {
-		size = rhs.size;
-		m = rhs.m;
+		size((rhs).size());
+		map((rhs).map());
+
+		return *this;
 	}
 
 	vector<Field>& operator[] (const int i) {
@@ -50,16 +52,25 @@ public:
 	void resize(int i) {
 		iSize = i;
 		Field f;
-		m.resize(iSize, vector<Field>(size, f));
+		m.resize(iSize, vector<Field>(iSize, f));
 	}
 
-	int size() {
+	int size() const {
 		return iSize;
 	}
 	
 	int size(int s) {
 		iSize = s;
 		return iSize;
+	}
+	
+	vector<vector<Field> > map() const {
+		return m;
+	}
+
+	vector<vector<Field> > map(vector<vector<Field > > m) {
+		this->m = m;
+		return m;
 	}
 
 private:

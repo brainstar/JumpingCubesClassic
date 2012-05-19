@@ -25,8 +25,9 @@ Game* QtRenderer::setGame(Game *g) {
 	return g;
 }
 
-void QtRenderer::newGame(int players, int fieldsize) {
-	if (game) game->newGame(players, fieldsize, this);
+int QtRenderer::newGame(int players, int fieldsize) {
+	if (game) return game->newGame(players, fieldsize, this);
+	return 0;
 }
 
 void QtRenderer::push(Map m) {
@@ -51,7 +52,7 @@ bool QtRenderer::listEmpty() {
 
 Map QtRenderer::update() {
 	if (maps.size() <= 0) {
-		if (game)
+		if (game) {
 			return game->getEmptyMap();
 		}
 		Map m;

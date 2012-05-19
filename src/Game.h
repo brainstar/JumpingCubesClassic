@@ -30,7 +30,7 @@ public:
 
 private:
 	// Reset the game
-	void reset(int p, int s);
+	int reset(int p, int s);
 
 	Map map; // Map
 	vector<vector<bool> > rollMap; // Map of elements that roll over in the next iteration
