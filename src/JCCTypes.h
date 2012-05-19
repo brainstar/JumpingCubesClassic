@@ -43,6 +43,12 @@ public:
 		m = rhs.m;
 	}
 	
+	void resize(int i) {
+		size = i;
+		Field f;
+		m.resize(size, vector<Field>(size, f));
+	}
+
 	int size;
 	vector<vector<Field> > m;
 };

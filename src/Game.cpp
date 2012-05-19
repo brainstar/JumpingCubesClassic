@@ -145,6 +145,12 @@ int Game::move(int x, int y) {
 	return currentPlayer;
 }
 
+Map Game::getEmptyMap() {
+	Map m;
+	m.resize(map.size);
+	return m;
+}
+
 void Game::reset(int p, int s) {
 	// Instantiate empty Field f for multiple purposes
 	Field f;
@@ -161,10 +167,9 @@ void Game::reset(int p, int s) {
 	players = p;
 	
 	// Update map size
-	map.size = s;
+	map.resize(s);
 	maxcount = s * s;
-	// Resize map
-	map.m.resize(map.size, vector<Field>(map.size, f));
+	
 	// Resize roll map
 	rollMap = vector<vector<bool> >(map.size, vector<bool>(map.size, false));
 	

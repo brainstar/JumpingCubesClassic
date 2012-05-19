@@ -53,7 +53,11 @@ bool QtRenderer::listEmpty() {
 
 Map QtRenderer::update() {
 	if (maps.size() <= 0) {
-		// TODO: In strong need of a "Get me an empty map"-helper-method
+		if (game)
+			return game->getEmptyMap();
+		}
+		Map m;
+		return m;
 	}
 	
 	Map map = maps.front();

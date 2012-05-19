@@ -24,7 +24,9 @@ public:
 	// Start new game
 	int newGame(int players = 0, int fieldSize = 8, Renderer* r = 0);
 	// Make a move
-	int move(float x, float y); // Coordinates in [0.0, 1.0[
+	int move(int x, int y);
+	// Get an empty map of correct size
+	Map getEmptyMap();
 
 private:
 	// Reset the game
