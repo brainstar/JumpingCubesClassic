@@ -1,5 +1,6 @@
 find_package(Qt4)
 find_package(SDL)
+find_package(OpenGL)
 
 set (CMAKE_HAVE_QT false)
 if (QT4_FOUND)
@@ -16,7 +17,7 @@ include_directories(${JCC_BINARY_DIR}/src)
 
 set(JCC_SOURCES ${JCC_SOURCES} main.cpp Game.cpp)
 
-if (QT4_FOUND)
+if (QT4_FOUND AND OPENGL_FOUND)
 	file(GLOB_RECURSE QtRenderer2d_SOURCES ${JCC_SOURCE_DIR}/src/QtRenderer2d/*.cpp)
 	set(QtRenderer2d_HEADERS QtRenderer2d/JCCQWidget.h QtRenderer2d/QOpenGLWidget.h)
 	include(${QT_USE_FILE})
@@ -27,7 +28,7 @@ if (QT4_FOUND)
 	QT4_WRAP_CPP(QtRenderer2d_HEADERS_MOC ${QtRenderer2d_HEADERS})
 	add_library(QtRenderer2d ${QtRenderer2d_SOURCES} ${QtRenderer2d_HEADERS_MOC})
 	
-	set(LIBS ${LIBS} QtRenderer2d ${QT_QTCORE_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} -lGL)
+	set(LIBS ${LIBS} QtRenderer2d ${QT_QTCORE_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} ${OPENGL_LIBRARY})
 endif (QT4_FOUND)
 
 add_executable (../JumpingCubesClassic ${JCC_SOURCES})
