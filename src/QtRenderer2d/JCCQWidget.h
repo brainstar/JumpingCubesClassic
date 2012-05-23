@@ -8,7 +8,7 @@
 #ifndef _JCC_JCCQWIDGET_H_
 #define _JCC_JCCQWIDGET_H_
 
-#include <QWidget.h>
+#include <QWidget>
 #include <QTimer>
 #include <QStatusBar>
 #include "QOpenGLWidget.h"
