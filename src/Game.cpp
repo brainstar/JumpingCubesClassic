@@ -17,18 +17,16 @@ Game::~Game() {
 }
 
 Renderer* Game::setRenderer(Renderer* r) {
-	if (!r) {
-		return NULL;
-	}
-	
 	renderer = r;
 	return renderer;
 }
 
-int Game::newGame(int players, int fieldSize, Renderer* r) {
-	if (!r && !renderer) return 0;
-	if (r) setRenderer(r);
+int Game::newGame(int players, int fieldSize) {
+	return reset(players, fieldSize);
+}
 
+int Game::newGame(int players, int fieldSize, Renderer* r) {
+	setRenderer(r);
 	return reset(players, fieldSize);
 }
 
@@ -37,7 +35,12 @@ int Game::move(int x, int y) {
 	if (x < 0 || x >= map.size() || y < 0 || y >= map.size()) {
 		return -10;
 	}
-	
+
+	// GameOver check
+	if (int winner = over()) {
+		return -winner;
+	}
+
 	// Permission check
 	Field *f = &(map[x][y]);
 	if (f->owner && f->owner != currentPlayer) {
@@ -47,7 +50,7 @@ int Game::move(int x, int y) {
 	// Increase value and push output
 	f->value++;
 	changeOwner(f, currentPlayer);
-	renderer->push(map);
+	if (renderer) renderer->push(map);
 	
 	// Set starting conditions for roll
 	rollMap[x][y] = true;
@@ -64,16 +67,13 @@ int Game::move(int x, int y) {
 		// Check every field about +1
 		for (int i = 0; i < map.size(); i++) {
 			for (int j = 0; j < map.size(); j++) {
-			
 				// This field got +1?
 				if (rollMap[i][j]) {
-				
 					// Get a pointer to this field
 					f = &(map[i][j]);
 
 					// This field rolls?
 					if (f->value > f->n) {
-					
 						// Have another iteration, maybe neighbours will roll
 						bRoll = true;
 					
@@ -121,7 +121,7 @@ int Game::move(int x, int y) {
 		rollMap = newRoll;
 		
 		// Push the new field to the renderer
-		renderer->push(map);
+		if (renderer) renderer->push(map);
 		
 		// Game over?
 		if (over()) {

@@ -22,7 +22,8 @@ public:
 	Renderer* setRenderer(Renderer* r);
 
 	// Start new game
-	int newGame(int players = 0, int fieldSize = 8, Renderer* r = 0);
+	int newGame(int players = 0, int fieldSize = 8);
+	int newGame(int players, int fieldSize, Renderer* r);
 	// Make a move
 	int move(int x, int y);
 	// Get an empty map of correct size
