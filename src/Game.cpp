@@ -8,9 +8,9 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game() {
-	renderer = 0;
-	reset(0, 0);
+Game::Game(unsigned int players, unsigned int fieldSize, Renderer* r) {
+	renderer = r;
+	reset(players, fieldSize);
 }
 
 Game::~Game() {
@@ -21,19 +21,10 @@ Renderer* Game::setRenderer(Renderer* r) {
 	return renderer;
 }
 
-int Game::newGame(int players, int fieldSize) {
-	return reset(players, fieldSize);
-}
-
-int Game::newGame(int players, int fieldSize, Renderer* r) {
-	setRenderer(r);
-	return reset(players, fieldSize);
-}
-
 int Game::move(int x, int y) {
 	// Range check
 	if (x < 0 || x >= map.size() || y < 0 || y >= map.size()) {
-		return -10;
+		return 0;
 	}
 
 	// GameOver check
@@ -143,33 +134,25 @@ int Game::move(int x, int y) {
 	return currentPlayer;
 }
 
-Map Game::getEmptyMap() {
-	Map m;
-	m.resize(map.size());
-	return m;
+Map Game::getActualMap() {
+	return map;
 }
 
 int Game::reset(int p, int s) {
 	// Instantiate empty Field f for multiple purposes
 	Field f;
-
-	// Map size and player count range check
-	if (s < 0 || s > 20) {
-		return 0;
-	}
-	if (p < 0 || p > 4) {
-		return 0;
-	}
 	
 	// Set amount of players
 	players = p;
+	player.resize(players + 1);
 	
 	// Update map size
 	map.resize(s);
 	maxcount = s * s;
 	
 	// Resize roll map
-	rollMap = vector<vector<bool> >(map.size(), vector<bool>(map.size(), false));
+	rollMap = vector<vector<bool> >(map.size(),
+		vector<bool>(map.size(), false));
 	
 	// Fill map with data
 	for (int i = 0; i < map.size(); i++) {
@@ -196,7 +179,7 @@ int Game::reset(int p, int s) {
 	
 	// Fill field statistics with data
 	player[0] = maxcount;
-	for (int i = 1; i < 5; i++) {
+	for (int i = 1; i <= players; i++) {
 		player[i] = 0;
 	}
 	currentPlayer = 1;

@@ -20,9 +20,9 @@ Q_OBJECT;
 
 public:
 	JCCQWidget(QtRenderer* r = 0);
-	~JCCQWidget();
+	virtual ~JCCQWidget();
 	
-	void setRenderer(QtRenderer* r);
+	QtRenderer* setRenderer(QtRenderer* r);
 	void startAnimation();
 	void gameOver();
 	

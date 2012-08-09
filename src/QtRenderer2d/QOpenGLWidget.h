@@ -19,7 +19,7 @@ Q_OBJECT;
 
 public:
 	QOpenGLWidget(QWidget *parent = 0, char *name = 0);
-	~QOpenGLWidget();
+	virtual ~QOpenGLWidget();
 	
 public slots:
 	void slotDraw(Map m);

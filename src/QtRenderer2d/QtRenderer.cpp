@@ -11,59 +11,70 @@
 using namespace std;
 
 QtRenderer::QtRenderer() {
-	display = NULL;
-	game = NULL;
+	game = 0;
 	display = new JCCQWidget(this);
 }
 
 QtRenderer::~QtRenderer() {
-}
-
-Game* QtRenderer::setGame(Game *g) {
-	if (g) game = g;
-	
-	return g;
+	delete game;
+	game = 0;
 }
 
 int QtRenderer::newGame(int players, int fieldsize) {
-	if (game) return game->newGame(players, fieldsize, this);
-	return 0;
+	// Discard old game
+	delete game;
+	// Start new one
+	game = new Game(players, fieldsize, (Renderer*) this);
+	return 1;
+}
+
+void QtRenderer::closeGame() {
+	delete game;
+	game = 0;
 }
 
 void QtRenderer::push(Map m) {
+	// Get map from Game and append it to map list
 	maps.push_back(m);
+	// Start displaying of maps
 	if (display) display->startAnimation();
 }
 
 void QtRenderer::flush() {
+	// Remove all but one maps from map list
 	while (maps.size() > 1) {
 		maps.pop_front();
 	}
-	
+
+	// Start displaing of maps
 	if (display) display->startAnimation();
 }
 
 bool QtRenderer::listEmpty() {
-	if (maps.size())  {
-		return false;
-	}
-	return true;
+	// Check whether list is empty or not
+	return maps.empty();
 }
 
 Map QtRenderer::update() {
 	if (maps.size() <= 0) {
+		// No map to deliver? Get actual map from Game
 		if (game) {
-			return game->getEmptyMap();
+			return game->getActualMap();
 		}
+		// No game instance? Draw empty map
+		// TODO: Draw something beautiful
 		Map m;
 		return m;
 	}
 	
+	// Take first map out of list and deliver it
 	Map map = maps.front();
 	maps.pop_front();
 	return map;
 }
 
 int QtRenderer::mapEvent(int x, int y) {
-	return game->move(x, y);
+	// Pass move event to Game
+	if (game) return game->move(x, y);
+	return 0;
 }

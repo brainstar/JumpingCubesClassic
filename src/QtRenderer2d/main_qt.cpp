@@ -16,10 +16,7 @@ int main_qt(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 	
-	Game *g = new Game();
 	QtRenderer *r = new QtRenderer();
-	g->setRenderer((Renderer*) r);
-	r->setGame(g);
 	
 	return app.exec();
 }

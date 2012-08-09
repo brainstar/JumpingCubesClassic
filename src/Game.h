@@ -15,19 +15,16 @@ using namespace std;
 class Game
 {
 public:
-	Game();
+	Game (unsigned int players, unsigned int fieldSize, Renderer* r);
 	~Game();
 
 	// Set Renderer interface
 	Renderer* setRenderer(Renderer* r);
 
-	// Start new game
-	int newGame(int players = 0, int fieldSize = 8);
-	int newGame(int players, int fieldSize, Renderer* r);
 	// Make a move
 	int move(int x, int y);
-	// Get an empty map of correct size
-	Map getEmptyMap();
+	// Get actual map
+	Map getActualMap();
 
 private:
 	// Reset the game
@@ -37,7 +34,7 @@ private:
 	vector<vector<bool> > rollMap; // Map of elements that roll over in the next iteration
 	int maxcount; // Size of the field
 	
-	int player[5]; // Array that holds the actual points of each player
+	std::vector<int> player; // Vector that holds the actual points of each player
 	int currentPlayer; // Int that holds the ID of player-in-turn
 	int players; // Amount of players
 	

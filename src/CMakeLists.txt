@@ -31,6 +31,8 @@ if (QT4_FOUND AND OPENGL_FOUND)
 	set(LIBS ${LIBS} QtRenderer2d ${QT_QTCORE_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} ${OPENGL_LIBRARY})
 endif (QT4_FOUND AND OPENGL_FOUND)
 
+set(CMAKE_CXX_FLAGS "-g -Wall")
+
 add_executable (../JumpingCubesClassic ${JCC_SOURCES})
 
 target_link_libraries (../JumpingCubesClassic ${LIBS})

@@ -15,12 +15,11 @@
 class QtRenderer : public Renderer {
 public:
 	QtRenderer();
-	~QtRenderer();
-	
-	Game* setGame(Game *g);
+	virtual ~QtRenderer();
 
 	// Display access
 	int newGame(int players = 2, int fieldsize = 5);
+	void closeGame();
 	int mapEvent(int x, int y);
 	Map update();
 	
