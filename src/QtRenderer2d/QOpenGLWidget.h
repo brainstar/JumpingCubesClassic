@@ -11,6 +11,7 @@
 #include <QtOpenGL/qgl.h>
 #include <QMouseEvent>
 #include <QTimer>
+#include <vector>
 #include "../JCCTypes.h"
 using namespace std;
 
@@ -35,9 +36,11 @@ signals:
 	void mouseClicked(int x, int y);
 	
 private:
-	float colors[5][3];
+	vector<vector<float> > colors;
 	float black[3];
 	Map map;
+
+	void createColors(int n);
 };
 
 #endif

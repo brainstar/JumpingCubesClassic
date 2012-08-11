@@ -5,30 +5,34 @@
  *      Author: Christian M.
  */
 
+#include <QColor>
+#include <iostream>
 #include "QOpenGLWidget.h"
 using namespace std;
 
 QOpenGLWidget::QOpenGLWidget(QWidget *parent, char *name) : QGLWidget(parent) {
-	// TODO: Since new mode allows more than 4 player, we need more colors
-	// TODO: Find algorithm for color picking
+	createColors(10);
+}
+
+QOpenGLWidget::~QOpenGLWidget() {
+}
+
+void QOpenGLWidget::createColors(int n) {
+	vector<float> x;
+	x.resize(3);
+	colors.resize(n + 1, x);
+
 	for (int i = 0; i < 3; i++) {
 		colors[0][i] = 0.5f;
 	}
 	
-	colors[1][0] = 1.0f;
-	colors[1][1] = colors[1][2] = 0.0f;
-	
-	colors[2][1] = 1.0f;
-	colors[2][0] = colors[2][2] = 0.0f;
-	
-	colors[3][2] = 1.0f;
-	colors[3][0] = colors[3][1] = 0.0f;
-	
-	colors[4][2] = 0.0f;
-	colors[4][0] = colors[4][1] = 1.0f;
-}
-
-QOpenGLWidget::~QOpenGLWidget() {
+	for (int i = 1; i <= n; i++) {
+		QColor col = QColor::fromHsvF(((float) i - 1) / n, 1.0f, 1.0f);
+		int id = (i + 1) / 2 + (i % 2 ? 0 : 5);
+		colors[id][0] = col.redF();
+		colors[id][1] = col.greenF();
+		colors[id][2] = col.blueF();
+	}
 }
 
 void QOpenGLWidget::slotDraw(Map m) {
@@ -119,11 +123,11 @@ void QOpenGLWidget::paintGL() {
 			
 			// Pick color
 			// TODO: player > 4
-			if (f->owner > 4) {
-				glColor3f(0.7f, 0.7f, 0.7f);
+			if (f->owner > 10) {
+				glColor3f(0.9f, 0.9f, 0.9f);
 			}
 			else {
-				glColor3fv(colors[f->owner]);
+				glColor3fv(&(colors[f->owner][0]));
 			}
 
 			// Draw field
