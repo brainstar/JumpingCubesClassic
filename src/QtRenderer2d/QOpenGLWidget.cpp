@@ -60,10 +60,11 @@ void QOpenGLWidget::paintEvent(QPaintEvent *event) {
 	painter.begin(this);
 	painter.setRenderHint(QPainter::Antialiasing);
 
-	// TODO: move draw code over here
+	painter.fillRect(0, 0,
+		size().width(), size().height(),
+		QColor::fromRgb(0,0,0));
+
 	if (map.size() <= 0) {
-		painter.setPen(QColor::fromRgb(0,0,0));
-		painter.drawRect(0, 0, size().width(), size().height());
 		painter.end();
 		return;
 	}
@@ -97,14 +98,12 @@ void QOpenGLWidget::paintEvent(QPaintEvent *event) {
 				colors[f->owner][2]);
 			painter.setPen(col);
 			painter.fillRect(x1, y1, wx, wy, col);
-			col.darker();
-			painter.setPen(QColor::fromRgb(0,0,0));
-			painter.drawText(QRectF(gridx * i,
-				gridy * j,
-				gridx,
-				gridy),
-				Qt::AlignCenter,
-				QString::number(f->value));
+			if (f->value > 1) {
+				painter.setPen(QColor::fromRgb(0,0,0));
+				painter.drawText(QRectF(gridx * i, gridy * j, gridx, gridy),
+					Qt::AlignCenter,
+					QString::number(f->value));
+			}
 		}
 	}
 	painter.end();
