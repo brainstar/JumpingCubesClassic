@@ -121,10 +121,13 @@ void JCCQWidget::mouseClicked(int x, int y) {
 void JCCQWidget::timerTick() {
 	// No renderer, no one to get maps from
 	if (!renderer) {
+		timer->stop();
 		return;
 	}
 
+	// Get new map to draw
 	emit signalDraw(renderer->update());
+	// Stop timer if everything is done
 	if (renderer->listEmpty()) {
 		timer->stop();
 	}
