@@ -21,8 +21,9 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	this->resize(500, 500);
 	
 	// Set up timer for roll updates
+	// TODO: Longer timer intervals lead to delays on mouse events
 	timer = new QTimer();
-	timer->setInterval(1000);
+	timer->setInterval(100);
 	
 	// Create menu bar
 	QMenuBar *menubar = new QMenuBar();
@@ -127,7 +128,7 @@ void JCCQWidget::timerTick() {
 
 	// Get new map to draw
 	emit signalDraw(renderer->update());
-	// Stop timer if everything is done
+	// Stop if timer everything is done
 	if (renderer->listEmpty()) {
 		timer->stop();
 	}
