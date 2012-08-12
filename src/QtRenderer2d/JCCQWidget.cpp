@@ -22,7 +22,7 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	
 	// Set up timer for roll updates
 	timer = new QTimer();
-	timer->setInterval(400);
+	timer->setInterval(1000);
 	
 	// Create menu bar
 	QMenuBar *menubar = new QMenuBar();
@@ -83,7 +83,7 @@ void JCCQWidget::gameOver() {
 	// Show winner message
 	// TODO: Winner number is displayed as special character
 	QString msg = "Player ";
-	msg += winner;
+	msg += QString::number(winner);
 	msg += " won!";
 	status->showMessage(msg, 0);
 }
@@ -113,7 +113,7 @@ void JCCQWidget::mouseClicked(int x, int y) {
 	// Positive number := ID of next player
 	else if (player > 0) {
 		QString msg = "Next player: ";
-		msg += player;
+		msg += QString::number(player);
 		status->showMessage(msg, 0);
 	}
 }
@@ -124,13 +124,9 @@ void JCCQWidget::timerTick() {
 		return;
 	}
 
-	// List empty -> Stop timer
+	emit signalDraw(renderer->update());
 	if (renderer->listEmpty()) {
 		timer->stop();
-	}
-	// Get next map from renderer and hand it over to gl widget
-	else {
-		emit signalDraw(renderer->update());
 	}
 }
 
@@ -141,7 +137,7 @@ void JCCQWidget::newGame() {
 		return;
 	}
 	// Error creating new Game? -> error message
-	if (!(renderer->newGame(2, 5))) {
+	if (!(renderer->newGame(4, 5))) {
 		status->showMessage("Error starting game");
 		return;
 	}

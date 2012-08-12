@@ -6,7 +6,7 @@
  */
 
 #include <QColor>
-#include <iostream>
+#include <QPainter>
 #include "QOpenGLWidget.h"
 using namespace std;
 
@@ -52,7 +52,7 @@ void QOpenGLWidget::slotDraw(Map m) {
 
 void QOpenGLWidget::slotDraw() {
 	// Tell OpenGL to redraw the Scene
-	updateGL();
+	repaint();
 }
 
 void QOpenGLWidget::initializeGL() {
@@ -85,8 +85,62 @@ void QOpenGLWidget::resizeGL(int w, int h) {
 	glLoadIdentity();
 }
 
+void QOpenGLWidget::paintEvent(QPaintEvent *event) {
+	QPainter painter;
+	painter.begin(this);
+	painter.setRenderHint(QPainter::Antialiasing);
+
+	// TODO: move draw code over here
+	if (map.size() <= 0) {
+		painter.setPen(QColor::fromRgb(0,0,0));
+		painter.drawRect(0, 0, size().width(), size().height());
+		painter.end();
+		return;
+	}
+
+	Field *f;
+	float s = (float) map.size();
+	float gridx = (float) size().width() / s;
+	float gridy = (float) size().height() / s;
+
+	QColor col;
+	for (int i = 0; i < map.size(); i++) {
+		for (int j = 0; j < map.size(); j++) {
+			f = &(map[i][j]);
+
+			float v = (float) f->value;
+			float wx = gridx / 10. * v;
+			float wy = gridy / 10. * v;
+
+
+ 			// Calculate corners of field
+			float x1, y1;
+			// lower corner = grid width * position
+			// center = lower corner + half grid width
+			// corner = center - half field width
+			// corner = grid width * position + half grid width - half field width
+			x1 = (gridx * i) + (gridx / 2) - (wx / 2);
+			y1 = (gridy * j) + (gridy / 2) - (wy / 2);
+
+			col = QColor::fromRgbF(colors[f->owner][0],
+				colors[f->owner][1],
+				colors[f->owner][2]);
+			painter.setPen(col);
+			painter.fillRect(x1, y1, wx, wy, col);
+			col.darker();
+			painter.setPen(QColor::fromRgb(0,0,0));
+			painter.drawText(QRectF(gridx * i,
+				gridy * j,
+				gridx,
+				gridy),
+				Qt::AlignCenter,
+				QString::number(f->value));
+		}
+	}
+	painter.end();
+}
 void QOpenGLWidget::paintGL() {
-	// Draw everything
+	/*// Draw everything
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	
@@ -97,6 +151,7 @@ void QOpenGLWidget::paintGL() {
 	
 	// Create field pointer, get field size
 	Field *f;
+	//QPainter painter(this);
 	float s = (float) map.size();
 	// Iterate through all fields
 	for (int i = 0; i < map.size(); i++) {
@@ -122,7 +177,6 @@ void QOpenGLWidget::paintGL() {
 			y2 = y1 + w;
 			
 			// Pick color
-			// TODO: player > 4
 			if (f->owner > 10) {
 				glColor3f(0.9f, 0.9f, 0.9f);
 			}
@@ -137,8 +191,23 @@ void QOpenGLWidget::paintGL() {
 				glVertex3f(x2, y2, 0.0f);
 				glVertex3f(x1, y2, 0.0f);
 			glEnd();
+
+			// Draw value text
+			// TODO: Crappy crap doesn't work
+			QColor col = QColor::fromRgb(colors[f->owner][0],
+				colors[f->owner][1],
+				colors[f->owner][2]);
+			col.darker();
+			painter.setPen(col);
+			painter.setFont(QFont());
+			painter.drawText(QRectF(size().width() / s * i,
+				size().height() / s * j,
+				size().width() / s,
+				size().height() / s),
+				Qt::AlignCenter,
+				QString::number(f->value));
 		}
-	}
+	} */
 }
 
 void QOpenGLWidget::mousePressEvent(QMouseEvent * event) {
