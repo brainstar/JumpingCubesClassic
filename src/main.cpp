@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 		r.push_back("Qt");
 	#endif
 	#ifdef CMAKE_HAVE_SDL
-		r.push_back("SDL");
+//		r.push_back("SDL");
 	#endif
 	
 	if (!r.size()) {
@@ -42,15 +42,18 @@ int main(int argc, char *argv[])
 		cout << "	" << i + 1 << ". " << r[i] << endl;
 	}
 	
-	cout << endl << "Choose your fate: ";
 	int i;
-	cin >> i;
-	i -= 1;
-	
-	if (i < 0 || i >= r.size()) {
-		cerr << "ERROR: Engine " << i << " not available" << endl;
-		return 0;
+	if (r.size() > 1) {
+		cout << endl << "Choose your fate: ";
+		cin >> i;
+		i -= 1;
+		
+		if (i < 0 || i >= r.size()) {
+			cerr << "ERROR: Engine " << i << " not available" << endl;
+			return 0;
+		}
 	}
+	else i = 0;
 	
 	#ifdef CMAKE_HAVE_QT
 		if (r[i] == "Qt") {
