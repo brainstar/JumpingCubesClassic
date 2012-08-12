@@ -25,6 +25,7 @@ public:
 	int move(int x, int y);
 	// Get actual map
 	Map getActualMap();
+	vector<int> getStats();
 
 private:
 	// Reset the game

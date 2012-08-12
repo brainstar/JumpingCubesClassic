@@ -40,13 +40,17 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	// Create OpenGL widget and status bar
 	gl = new QOpenGLWidget();
 	status = new QStatusBar();
+	playertable = new QLabel();
 	
 	// Create layout, append all widgets and set layout
 	QVBoxLayout *layout = new QVBoxLayout();
 	layout->addWidget(menubar, 0);
 	layout->addStretch(0);
 	layout->addWidget(gl, 1);
-	layout->addWidget(status, 0);
+	QHBoxLayout *statusline = new QHBoxLayout();
+	statusline->addWidget(status, 0);
+	statusline->addWidget(playertable, 0);
+	layout->addLayout(statusline, 0);
 	this->setLayout(layout);
 	
 	// Connect timer and gl widget
@@ -117,6 +121,15 @@ void JCCQWidget::mouseClicked(int x, int y) {
 		msg += QString::number(player);
 		status->showMessage(msg, 0);
 	}
+
+	// Get stats
+	vector<int> stats = renderer->getStats();
+	QString msg;
+	for (int i = 1; i < stats.size(); i++) {
+		msg += QString::number(i) + ": "
+			+ QString::number(stats[i]) + " | ";
+	}
+	playertable->setText(msg);
 }
 
 void JCCQWidget::timerTick() {

@@ -9,6 +9,7 @@
 #define _JCC_QTRENDERER_H_
 
 #include <list>
+#include <vector>
 #include "../Renderer.h"
 #include "../Game.h"
 
@@ -22,6 +23,7 @@ public:
 	void closeGame();
 	int mapEvent(int x, int y);
 	Map update();
+	vector<int> getStats();
 	
 	// Game access 
 	void push(Map m);

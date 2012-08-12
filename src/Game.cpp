@@ -138,6 +138,10 @@ Map Game::getActualMap() {
 	return map;
 }
 
+vector<int> Game::getStats() {
+	return player;
+}
+
 int Game::reset(int p, int s) {
 	// Instantiate empty Field f for multiple purposes
 	Field f;

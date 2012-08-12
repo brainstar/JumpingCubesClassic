@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <QTimer>
 #include <QStatusBar>
+#include <QLabel>
 #include "QOpenGLWidget.h"
 #include "QtRenderer.h"
 using namespace std;
@@ -41,6 +42,7 @@ signals:
 private:
 	QOpenGLWidget* gl;
 	QStatusBar* status;
+	QLabel* playertable;
 	QtRenderer* renderer;
 	QTimer* timer;
 	int winner;

@@ -73,6 +73,14 @@ Map QtRenderer::update() {
 	return map;
 }
 
+vector<int> QtRenderer::getStats() {
+	if (game) {
+		return game->getStats();
+	}
+	vector<int> a;
+	return a;
+}
+
 int QtRenderer::mapEvent(int x, int y) {
 	// Pass move event to Game
 	if (game) return game->move(x, y);
