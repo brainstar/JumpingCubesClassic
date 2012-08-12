@@ -27,9 +27,6 @@ public slots:
 	void slotDraw();
 
 protected:
-	void initializeGL();
-	void resizeGL(int w, int h);
-	void paintGL();
 	void paintEvent(QPaintEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 
