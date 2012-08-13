@@ -17,6 +17,15 @@ QOpenGLWidget::QOpenGLWidget(QWidget *parent, char *name) : QGLWidget(parent) {
 QOpenGLWidget::~QOpenGLWidget() {
 }
 
+QColor QOpenGLWidget::getPlayerColor(int n) {
+	if (n >= colors.size()) {
+		return QColor::fromRgb(0,0,0);
+	}
+	return QColor::fromRgbF(colors[n][0],
+				colors[n][1],
+				colors[n][2]);
+}
+
 void QOpenGLWidget::createColors(int n) {
 	vector<float> x;
 	x.resize(3);

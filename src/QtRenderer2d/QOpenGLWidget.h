@@ -11,6 +11,7 @@
 #include <QtOpenGL/qgl.h>
 #include <QMouseEvent>
 #include <QTimer>
+#include <QColor>
 #include <vector>
 #include "../JCCTypes.h"
 using namespace std;
@@ -21,6 +22,7 @@ Q_OBJECT;
 public:
 	QOpenGLWidget(QWidget *parent = 0, char *name = 0);
 	virtual ~QOpenGLWidget();
+	QColor getPlayerColor(int i);
 	
 public slots:
 	void slotDraw(Map m);

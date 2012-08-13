@@ -47,10 +47,8 @@ JCCQWidget::JCCQWidget(QtRenderer* r) {
 	layout->addWidget(menubar, 0);
 	layout->addStretch(0);
 	layout->addWidget(gl, 1);
-	QHBoxLayout *statusline = new QHBoxLayout();
-	statusline->addWidget(status, 0);
-	statusline->addWidget(playertable, 0);
-	layout->addLayout(statusline, 0);
+	status->addPermanentWidget(playertable, 0);
+	layout->addWidget(status, 0);
 	this->setLayout(layout);
 	
 	// Connect timer and gl widget
@@ -113,7 +111,7 @@ void JCCQWidget::mouseClicked(int x, int y) {
 	}
 	// 0 := Invalid move
 	else if (player == 0) {
-		status->showMessage("Invalid move", 2000);
+		status->showMessage("Invalid move", 1000);
 	}
 	// Positive number := ID of next player
 	else if (player > 0) {
@@ -127,7 +125,10 @@ void JCCQWidget::mouseClicked(int x, int y) {
 	QString msg;
 	for (int i = 1; i < stats.size(); i++) {
 		msg += QString::number(i) + ": "
-			+ QString::number(stats[i]) + " | ";
+			+ QString::number(stats[i]);
+		if (i < stats.size() - 1) {
+			msg += " | ";
+		}
 	}
 	playertable->setText(msg);
 }
@@ -150,12 +151,12 @@ void JCCQWidget::timerTick() {
 void JCCQWidget::newGame() {
 	// No renderer, no new game -> error message
 	if (!renderer) {
-		status->showMessage("Error starting game: No Renderer available");
+		status->showMessage("Error starting game: No Renderer available", 1000);
 		return;
 	}
 	// Error creating new Game? -> error message
-	if (!(renderer->newGame(4, 5))) {
-		status->showMessage("Error starting game");
+	if (!(renderer->newGame(4, 10))) {
+		status->showMessage("Error starting game", 1000);
 		return;
 	}
 
@@ -163,7 +164,7 @@ void JCCQWidget::newGame() {
 	winner = 0;
 
 	// Show message
-	status->showMessage("New game started");
+	status->showMessage("New game started", 1000);
 }
 
 void JCCQWidget::closeGame() {
@@ -179,5 +180,7 @@ void JCCQWidget::closeGame() {
 	winner = -1;
 
 	// Show message
-	status->showMessage("Game closed.");
+	status->showMessage("Game closed.", 1000);
+
+	startAnimation();
 }
