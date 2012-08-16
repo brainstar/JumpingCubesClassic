@@ -155,7 +155,7 @@ void JCCQWidget::newGame() {
 		return;
 	}
 	// Error creating new Game? -> error message
-	if (!(renderer->newGame(4, 10))) {
+	if (!(renderer->newGame(4, 7))) {
 		status->showMessage("Error starting game", 1000);
 		return;
 	}
