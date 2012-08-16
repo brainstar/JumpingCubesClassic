@@ -7,41 +7,22 @@
 
 #include <QColor>
 #include <QPainter>
+#include <QImage>
 #include "QOpenGLWidget.h"
 using namespace std;
 
 QOpenGLWidget::QOpenGLWidget(QWidget *parent, char *name) : QGLWidget(parent) {
-	createColors(10);
+	QImage* temp = new QImage("../misc/cubes.png");
+	for (int i = 0; i < 5; i++) {
+		vector<QImage> row;
+		for (int j = 0; j < 7; j++) {
+			row.push_back(temp->copy(j*33, i*33, 33, 33));
+		}
+		cubes.push_back(row);
+	}
 }
 
 QOpenGLWidget::~QOpenGLWidget() {
-}
-
-QColor QOpenGLWidget::getPlayerColor(int n) {
-	if (n >= colors.size()) {
-		return QColor::fromRgb(0,0,0);
-	}
-	return QColor::fromRgbF(colors[n][0],
-				colors[n][1],
-				colors[n][2]);
-}
-
-void QOpenGLWidget::createColors(int n) {
-	vector<float> x;
-	x.resize(3);
-	colors.resize(n + 1, x);
-
-	for (int i = 0; i < 3; i++) {
-		colors[0][i] = 0.5f;
-	}
-	
-	for (int i = 1; i <= n; i++) {
-		QColor col = QColor::fromHsvF(((float) i - 1) / n, 1.0f, 1.0f);
-		int id = (i + 1) / 2 + (i % 2 ? 0 : 5);
-		colors[id][0] = col.redF();
-		colors[id][1] = col.greenF();
-		colors[id][2] = col.blueF();
-	}
 }
 
 void QOpenGLWidget::slotDraw(Map m) {
@@ -89,8 +70,8 @@ void QOpenGLWidget::paintEvent(QPaintEvent *event) {
 			f = &(map[i][j]);
 
 			float v = (float) f->value;
-			float wx = gridx / 10. * v;
-			float wy = gridy / 10. * v;
+			float wx = gridx / 10. * 8;
+			float wy = gridy / 10. * 8;
 
 
  			// Calculate corners of field
@@ -102,16 +83,10 @@ void QOpenGLWidget::paintEvent(QPaintEvent *event) {
 			x1 = (gridx * i) + (gridx / 2) - (wx / 2);
 			y1 = (gridy * j) + (gridy / 2) - (wy / 2);
 
-			col = QColor::fromRgbF(colors[f->owner][0],
-				colors[f->owner][1],
-				colors[f->owner][2]);
-			painter.setPen(col);
-			painter.fillRect(x1, y1, wx, wy, col);
-			if (f->value > 1) {
-				painter.setPen(QColor::fromRgb(0,0,0));
-				painter.drawText(QRectF(gridx * i, gridy * j, gridx, gridy),
-					Qt::AlignCenter,
-					QString::number(f->value));
+			// Draw cubes :D
+			if (v <= 6) {
+				QRect r(x1, y1, wx, wy);
+				painter.drawImage(r, cubes[f->owner][v-1]);
 			}
 		}
 	}
