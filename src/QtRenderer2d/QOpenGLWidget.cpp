@@ -63,6 +63,8 @@ void QOpenGLWidget::paintEvent(QPaintEvent *event) {
 	float s = (float) map.size();
 	float gridx = (float) size().width() / s;
 	float gridy = (float) size().height() / s;
+	float wx = gridx / 10. * 8;
+	float wy = gridy / 10. * 8;
 
 	QColor col;
 	for (int i = 0; i < map.size(); i++) {
@@ -70,23 +72,34 @@ void QOpenGLWidget::paintEvent(QPaintEvent *event) {
 			f = &(map[i][j]);
 
 			float v = (float) f->value;
-			float wx = gridx / 10. * 8;
-			float wy = gridy / 10. * 8;
-
 
  			// Calculate corners of field
-			float x1, y1;
+			float x1, y1, dx, dy;
 			// lower corner = grid width * position
 			// center = lower corner + half grid width
 			// corner = center - half field width
 			// corner = grid width * position + half grid width - half field width
-			x1 = (gridx * i) + (gridx / 2) - (wx / 2);
-			y1 = (gridy * j) + (gridy / 2) - (wy / 2);
+			if (f->mark){
+				x1 = gridx * i;
+				y1 = gridy * j;
+				dx = gridx;
+				dy = gridy;
+			}
+			else {
+				x1 = (gridx * i) + (gridx / 2) - (wx / 2);
+				y1 = (gridy * j) + (gridy / 2) - (wy / 2);
+				dx = wx;
+				dy = wy;
+			}
+			QRect r(x1, y1, dx, dy);
 
 			// Draw cubes :D
 			if (v <= 6) {
-				QRect r(x1, y1, wx, wy);
 				painter.drawImage(r, cubes[f->owner][v-1]);
+			}
+			else {
+				painter.drawImage(r, cubes[f->owner][6]);
+				painter.drawText(r, QString::number(v));
 			}
 		}
 	}

@@ -21,6 +21,24 @@ Renderer* Game::setRenderer(Renderer* r) {
 	return renderer;
 }
 
+vector<int> Game::getVector(int x, int y) {
+	vector<int> v(2);
+	v[0] = x;
+	v[1] = y;
+	return v;
+}
+
+void Game::increment(int x, int y) {
+	if (x < 0 || x >= map.size() || y < 0 || y >= map.size()) {
+		return;
+	}
+	Field *f = &(map[x][y]);
+
+	f->value++;
+	changeOwner(f, currentPlayer);
+	iRollMap.push_back(getVector(x, y));
+}
+
 int Game::move(int x, int y) {
 	// Range check
 	if (x < 0 || x >= map.size() || y < 0 || y >= map.size()) {
@@ -37,90 +55,43 @@ int Game::move(int x, int y) {
 	if (f->owner && f->owner != currentPlayer) {
 		return 0;
 	}
-	
-	// Increase value and push output
-	f->value++;
-	changeOwner(f, currentPlayer);
-	if (renderer) renderer->push(map);
-	
-	// Set starting conditions for roll
-	rollMap[x][y] = true;
-	bool bRoll = true;
-	
-	// Roll
-	while (bRoll) {
-		// Not roll again by default unless some field actually rolls
-		bRoll = false;
-		
-		// Create new bool field with same size as map
-		vector<vector<bool> > newRoll = vector<vector<bool> >(map.size(), vector<bool>(map.size(), false));
-		
-		// Check every field about +1
-		for (int i = 0; i < map.size(); i++) {
-			for (int j = 0; j < map.size(); j++) {
-				// This field got +1?
-				if (rollMap[i][j]) {
-					// Get a pointer to this field
-					f = &(map[i][j]);
 
-					// This field rolls?
-					if (f->value > f->n) {
-						// Have another iteration, maybe neighbours will roll
-						bRoll = true;
-					
-						// Subtract field value
-						f->value -= f->n;
-						
-						// Left neighbour does exist?
-						if (i > 0) {
-							// Get iterator
-							Field *x = &(map[i-1][j]);
-							// +1
-							x->value++;
-							// New owner
-							changeOwner(x, currentPlayer);
-							// Check for roll in next iteration
-							newRoll[i-1][j] = true;
-						}
-						// Right neighbour does exist?
-						if (i < map.size() - 1) {
-							Field *x = &(map[i+1][j]);
-							x->value++;
-							changeOwner(x, currentPlayer);
-							newRoll[i+1][j] = true;
-						}
-						// Upper neighbour does exist?
-						if (j > 0) {
-							Field *x = &(map[i][j-1]);
-							x->value++;
-							changeOwner(x, currentPlayer);
-							newRoll[i][j-1] = true;
-						}
-						// Lower neighbour does exist?
-						if (j < map.size() - 1) {
-							Field *x = &(map[i][j+1]);
-							x->value++;
-							changeOwner(x, currentPlayer);
-							newRoll[i][j+1] = true;
-						}
-					}
+	// Increase value and push output
+	increment(x, y);
+	f->mark = true;
+	if (renderer) renderer->push(map);
+	iRollMap.push_back(getVector(x, y));
+	list<vector<int> >::iterator iter;
+
+	while (iRollMap.size()) {
+		iter = iRollMap.begin();
+		int tx = (*iter)[0], ty = (*iter)[1];
+		if (tx >= 0 && tx < map.size() && ty >= 0 && ty < map.size()) {
+			f = &(map[tx][ty]);
+			if (f->value > f->n) {
+				if (!(f->mark)){
+					f->mark = true;
+					if (renderer) renderer->push(map);
 				}
+				increment(tx - 1, ty);
+				increment(tx + 1, ty);
+				increment(tx, ty - 1);
+				increment(tx, ty + 1);
+				if (renderer) renderer->push(map);
+				f->value -= f->n;
+			}
+			f->mark = false;
+			if (renderer) renderer->push(map);
+		}
+		iRollMap.pop_front();
+		
+		if (over()) {
+			while (iRollMap.size()) {
+				iRollMap.pop_front();
 			}
 		}
-		
-		// Update roll information
-		rollMap = newRoll;
-		
-		// Push the new field to the renderer
-		if (renderer) renderer->push(map);
-		
-		// Game over?
-		if (over()) {
-			// No further iteration
-			bRoll = false;
-		}
 	}
-	
+	 
 	// Game over? Promote winner!
 	if (int winner = over()) {
 		return -winner;
@@ -153,10 +124,6 @@ int Game::reset(int p, int s) {
 	// Update map size
 	map.resize(s);
 	maxcount = s * s;
-	
-	// Resize roll map
-	rollMap = vector<vector<bool> >(map.size(),
-		vector<bool>(map.size(), false));
 	
 	// Fill map with data
 	for (int i = 0; i < map.size(); i++) {
@@ -208,7 +175,7 @@ void Game::changeOwner(Field *f, int p) {
 int Game::over()
 {
 	// Someone just won the game?
-	for (int i = 0; i < players; i++)
+	for (int i = 0; i <= players; i++)
 	{
 		if (player[i] == maxcount)
 		{

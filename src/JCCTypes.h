@@ -12,6 +12,7 @@ public:
 		owner = 0;
 		value = 1;
 		n = 0;
+		mark = false;
 	}
 
 	Field& operator=(const Field &rhs) {
@@ -20,6 +21,7 @@ public:
 		owner = rhs.owner;
 		value = rhs.value;
 		n = rhs.n;
+		mark = rhs.mark;
 
 		return *this;
 	}
@@ -28,6 +30,7 @@ public:
 	int owner; // 0 := no owner, 1 - 4 := player id
 	int value; // Actual value of this element
 	int n; // Maximum value of this element
+	bool mark;
 };
 
 class Map {

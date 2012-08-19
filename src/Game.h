@@ -8,6 +8,7 @@
 #ifndef GAME_H_
 #define GAME_H_
 
+#include <list>
 #include "JCCTypes.h"
 #include "Renderer.h"
 using namespace std;
@@ -32,7 +33,7 @@ private:
 	int reset(int p, int s);
 
 	Map map; // Map
-	vector<vector<bool> > rollMap; // Map of elements that roll over in the next iteration
+	list<vector<int> > iRollMap;
 	int maxcount; // Size of the field
 	
 	std::vector<int> player; // Vector that holds the actual points of each player
@@ -48,6 +49,9 @@ private:
 	int over();
 	// Sets ID to the next player
 	void next();
+
+	vector<int> getVector(int x, int y);
+	void increment(int x, int y);
 };
 
 #endif /* GAME_H_ */
