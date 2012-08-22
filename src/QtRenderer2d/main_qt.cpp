@@ -16,7 +16,7 @@ int main_qt(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 	
-	QtRenderer *r = new QtRenderer();
+	new QtRenderer();
 	
 	return app.exec();
 }

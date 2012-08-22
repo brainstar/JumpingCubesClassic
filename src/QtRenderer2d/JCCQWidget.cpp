@@ -123,7 +123,7 @@ void JCCQWidget::mouseClicked(int x, int y) {
 	// Get stats
 	vector<int> stats = renderer->getStats();
 	QString msg;
-	for (int i = 1; i < stats.size(); i++) {
+	for (unsigned int i = 1; i < stats.size(); i++) {
 		msg += QString::number(i) + ": "
 			+ QString::number(stats[i]);
 		if (i < stats.size() - 1) {

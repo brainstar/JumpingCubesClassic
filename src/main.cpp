@@ -38,17 +38,17 @@ int main(int argc, char *argv[])
 	
 	cout << "Available render engines: " << endl;
 	
-	for (int i = 0; i < r.size(); i++) {
+	for (unsigned int i = 0; i < r.size(); i++) {
 		cout << "	" << i + 1 << ". " << r[i] << endl;
 	}
 	
-	int i;
+	unsigned int i;
 	if (r.size() > 1) {
 		cout << endl << "Choose your fate: ";
 		cin >> i;
 		i -= 1;
 		
-		if (i < 0 || i >= r.size()) {
+		if (i >= r.size()) {
 			cerr << "ERROR: Engine " << i << " not available" << endl;
 			return 0;
 		}
