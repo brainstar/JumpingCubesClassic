@@ -33,6 +33,6 @@ endif (QT4_FOUND AND OPENGL_FOUND)
 
 set(CMAKE_CXX_FLAGS "-g -Wall")
 
-add_executable (../JumpingCubesClassic ${JCC_SOURCES})
+add_executable (../JumpingCubesClassic MACOSX_BUNDLE ${JCC_SOURCES})
 
 target_link_libraries (../JumpingCubesClassic ${LIBS})
